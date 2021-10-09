@@ -1,0 +1,10 @@
+black==21.9b0
+click==8.0.1
+isort==5.9.3
+mypy-extensions==0.4.3
+pathspec==0.9.0
+platformdirs==2.4.0
+pyserial==3.5
+regex==2021.9.30
+tomli==1.2.1
+typing-extensions==3.10.0.2
