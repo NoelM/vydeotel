@@ -4,8 +4,8 @@ import vydeotel as vy
 
 minitel = vy.Minitel("/dev/ttyS0")
 
-minitel.clean_screen()
 minitel.move_cursor_xy(0,0)
+minitel.clean_screen()
 
 minitel.println("")
 minitel.set_attribute(vy.DOUBLE_GRANDEUR)
