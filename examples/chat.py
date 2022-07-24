@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../')
 import vydeotel as vy
 
 minitel = vy.Minitel("/dev/ttyS0")
