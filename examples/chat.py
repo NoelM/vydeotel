@@ -36,7 +36,7 @@ async def keyboard_event(minitel: vy.Minitel):
         elif input == vy.SOMMAIRE:
             print("SOMMAIRE")
         else:
-            input_buffer += chr(input)
+            buffer += chr(input)
 
 asyncio.get_event_loop().run_until_complete(keyboard_event(minitel))
 asyncio.get_event_loop().run_forever()
