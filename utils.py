@@ -29,9 +29,28 @@ def high_byte(word):
 
     return word >> 8
 
+
 def display_vdt(minitel, filename):
     minitel.clean_screen()
     with open(filename, "rb") as fp:
         data = fp.read()
         for byte in data:
             minitel.write_byte(int(byte))
+
+
+def between_bounds(value: int, min_bound: int, max_bound: int) -> int:
+    """Return the value between the bounds included
+        e.g. between_bounds(-1, 0, 10) -> 0
+        and  between_bounds(11, 0, 10) -> 10
+
+    :param value: an integer to keep between bounds
+    :param min_bound: the value must be greater than or equal to it
+    :param max_bound: the value must be less than or equal to it
+    :return: the value bounded
+    """
+    if value < min_bound:
+        return min_bound
+    elif value > max_bound:
+        return max_bound
+    else:
+        return value
