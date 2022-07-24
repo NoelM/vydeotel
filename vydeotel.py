@@ -1,6 +1,7 @@
 import time
 
 import serial
+import asyncio
 from struct import pack
 
 from consts import *
@@ -14,6 +15,9 @@ class Minitel:
 
         self.write_parity = write_parity
         self.read_parity = read_parity
+    
+    def set_application(self, app: ApplicationBase):
+        self.app = app
 
     def write_byte(self, byte: int):
         if self.write_parity:
@@ -347,3 +351,101 @@ class Minitel:
                         code = (code << 8) + self.read_byte()
 
         return code
+
+    async def event_loop(self):
+        while True:
+            key = self.get_key_code()
+            if key == ENVOI:
+                self.app.envoi()
+            elif key == ANNULATION:
+                self.app.annulation()
+            elif key == REPETITION:
+                self.app.repetition()
+            elif key == CORRECTION:
+                self.app.correction()
+            elif key == SOMMAIRE:
+                self.app.sommaire()
+            elif key == RETOUR:
+                self.app.retour()
+            elif key == GUIDE:
+                self.app.guide()
+            elif key == SUITE:
+                self.app.suite()
+            else:
+                self.buffer += chr(key)                
+
+
+    def start(self):
+        asyncio.get_event_loop().run_until_complete(self.event_loop())
+        asyncio.get_event_loop().run_forever()
+
+
+class VueBase:
+    def __init__(self):
+        pass
+
+    def envoi(self):
+        pass
+
+    def annulation(self):
+        pass
+
+    def repetition(self):
+        pass
+
+    def correction(self):
+        pass
+
+
+class ApplicationBase:
+    def __init__(self):
+        self.vue_active = -1
+        self.vues = map()
+
+    def nouvelles_vues(self, identifiant: int, vue: VueBase):
+        if identifiant in self.vues:
+            return
+
+        self.vues[identifiant] = vue
+        
+    def vue_sommaire(self, vue: VueBase):
+        self.sommaire = vue
+
+    def vue_guide(self, vue: VueBase):
+        self.guide = vue
+
+    def envoi(self):
+        if self.vue_active < 0:
+            return
+
+        self.vues[self.vue_active].envoi()
+
+    def annulation(self):
+        if self.vue_active < 0:
+            return
+
+        self.vues[self.vue_active].annulation()
+
+    def correction(self):
+        if self.vue_active < 0:
+            return
+
+        self.vues[self.vue_active].correction()
+
+    def repetition(self):
+        if self.vue_active < 0:
+            return
+
+        self.vues[self.vue_active].repetition()
+
+    def sommaire(self):
+        pass
+
+    def retour(self):
+        pass
+
+    def guide(self):
+        pass
+
+    def suite(self):
+        pass
