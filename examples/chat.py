@@ -29,14 +29,14 @@ async def keyboard_event(minitel: vy.Minitel):
             print("RETOUR")
         elif key == vy.GUIDE:
             print("GUIDE")
-        elif input == vy.ENVOI:
+        elif key == vy.ENVOI:
             print("ENVOI")
             print(buffer)
             buffer = ""
-        elif input == vy.SOMMAIRE:
+        elif key == vy.SOMMAIRE:
             print("SOMMAIRE")
         else:
-            buffer += chr(input)
+            buffer += chr(key)
 
 asyncio.get_event_loop().run_until_complete(keyboard_event(minitel))
 asyncio.get_event_loop().run_forever()
