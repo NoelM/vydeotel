@@ -7,7 +7,6 @@ class LogWindow(vy.Window):
     def __init__(self):
         super().__init__(0, 0, 40, 40)
         self.credentials = []
-        self.next_window = ChatWindow()
 
     def draw(self):
         super().draw()
@@ -34,15 +33,16 @@ class LogWindow(vy.Window):
         else:
             self.credentials.append(self.buffer)
             self.buffer = ""
-            return self.next_window
+            return ChatWindow(self.credentials[0])
 
 
 class ChatWindow(vy.Window):
-    def __init__(self):
+    def __init__(self, username: string):
         super().__init__(0, 0, 40, 40)
+        self.username = username
 
     def draw(self):
-        self.m.println("Salut Coquin")
+        self.m.println(f"Salut {self.username}, petit coquin va!")
 
 
 if __name__ == "__main__"

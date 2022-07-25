@@ -394,7 +394,7 @@ class Window:
         self.y = y
 
         self.width = width
-        self.heigh = height
+        self.height = height
         self.border = border
 
         self.fg = fg
@@ -442,10 +442,10 @@ class Window:
         pass
 
     def retour(self) -> Window:
-        pass
+        return self.prev_window
 
     def guide(self) -> Window:
         pass
 
     def suite(self) -> Window:
-        pass
+        return self.next_window
