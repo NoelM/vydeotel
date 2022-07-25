@@ -9,6 +9,72 @@ from consts import *
 from utils import *
 
 
+class Window:
+    def __init__(self, x: int, y: int, width: int, height: int, border=False, fg=CARACTERE_BLANC, bg=FOND_NORMAL,
+                 typo=GRANDEUR_NORMALE):
+        self.buffer = ""
+
+        self.x = x
+        self.y = y
+
+        self.width = width
+        self.height = height
+        self.border = border
+
+        self.fg = fg
+        self.bg = bg
+        self.typo = typo
+
+        self.prev_window = None
+        self.next_window = None
+
+    def set_minitel(self, m: Minitel) -> None:
+        self.m = m
+
+    def set_prev_window(self, w: Window) -> None:
+        self.prev_window = w
+
+    def set_next_window(self, w: Window) -> None:
+        self.next_window = w
+
+    def default_style(self) -> None:
+        self.m.set_attribute(self.typo)
+        self.m.set_attribute(self.fg)
+        self.m.set_attribute(self.bg)
+
+    def draw(self) -> None:
+        self.m.clean_screen()
+        self.m.move_cursor_xy(self.x, self.y)
+        self.default_style()
+
+    def new_key(self, key: int):
+        self.buffer += chr(key)
+
+    def envoi(self) -> Window:
+        pass
+
+    def annulation(self) -> Window:
+        pass
+
+    def correction(self) -> Window:
+        pass
+
+    def repetition(self) -> Window:
+        pass
+
+    def sommaire(self) -> Window:
+        pass
+
+    def retour(self) -> Window:
+        return self.prev_window
+
+    def guide(self) -> Window:
+        pass
+
+    def suite(self) -> Window:
+        return self.next_window
+
+
 class Minitel:
     def __init__(self, port, write_parity=True, read_parity=True):
         self.serial = serial.Serial(port, 1200, timeout=1000)
@@ -384,68 +450,3 @@ class Minitel:
         def start(self):
             asyncio.get_event_loop().run_until_end(self.event_loop())
             asyncio.get_event_loop().run_forever()
-
-
-class Window:
-    def __init__(self, x: int, y: int, width: int, height: int, border = False, fg = CARACTERE_BLANC, bg = FOND_NORMAL, typo = GRANDEUR_NORMALE):
-        self.buffer = ""
-
-        self.x = x
-        self.y = y
-
-        self.width = width
-        self.height = height
-        self.border = border
-
-        self.fg = fg
-        self.bg = bg
-        self.typo = typo
-        
-        self.prev_window = None
-        self.next_window = None
-
-    def set_minitel(self, m: Minitel) -> None:
-        self.m = m
-
-    def set_prev_window(self, w: Window) -> None:
-        self.prev_window = w
-
-    def set_next_window(self, w: Window) -> None:
-        self.next_window = w
-    
-    def default_style(self) -> None:
-        self.m.set_attribute(self.typo)
-        self.m.set_attribute(self.fg)
-        self.m.set_attribute(self.bg)
-
-    def draw(self) -> None:
-        self.m.clean_screen()
-        self.m.move_cursor_xy(self.x, self.y)
-        self.default_style()
-
-    def new_key(self, key: int):
-        self.buffer += chr(key)
-
-    def envoi(self) -> Window:
-        pass
-
-    def annulation(self) -> Window:
-        pass
-
-    def correction(self) -> Window:
-        pass
-
-    def repetition(self) -> Window:
-        pass
-
-    def sommaire(self) -> Window:
-        pass
-
-    def retour(self) -> Window:
-        return self.prev_window
-
-    def guide(self) -> Window:
-        pass
-
-    def suite(self) -> Window:
-        return self.next_window
