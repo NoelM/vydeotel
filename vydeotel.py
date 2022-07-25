@@ -421,12 +421,13 @@ class Minitel:
 
     async def event_loop(self):
         new_window = None
+        self.window.set_minitel(self)
         self.window.draw()
         while True:
             if new_window is not None:
                 new_window.set_minitel(self)
                 new_window.set_prev_window(self.window)
-                self.window = window
+                self.window = new_window
                 self.window.draw()
 
             key = self.get_key_code()
