@@ -50,4 +50,5 @@ if __name__ == "__main__"
 
     minitel = vy.Minitel("/dev/ttyS0")
     minitel.set_window(window)
+    minitel.start()
 
