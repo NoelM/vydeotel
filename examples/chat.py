@@ -74,13 +74,17 @@ class ChatWindow(vy.Window):
         self.m.println(f"Salut {self.username}, petit coquin va!")
 
 
-class Suprise(vy.Window):
+class Surprise(vy.Window):
     def __init__(self):
         super().__init__(0, 0, 40, 40)
 
     def draw(self):
         while True:
-            self.m.write_char(random.choice(string.ascii_letters))
+            self.m.set_attribute(vy.ESC)
+            self.m.set_attribute(0x39)
+            self.m.set_attribute(vy.START)
+            self.m.set_attribute(vy.ROULEAU)
+            self.m.print_char(random.choice(string.ascii_letters))
             time.sleep(0.002)
 
 
