@@ -1,5 +1,4 @@
 import sys
-from consts import DOUBLE_GRANDEUR, GRANDEUR_NORMALE, INVERSION_FOND
 sys.path.append('../')
 import vydeotel as vy
 
@@ -10,8 +9,8 @@ class LogWindow(vy.Window):
 
     def draw(self):
         super().draw()
-        self.m.set_attribute(DOUBLE_GRANDEUR)
-        self.m.set_attribute(INVERSION_FOND)
+        self.m.set_attribute(vy.DOUBLE_GRANDEUR)
+        self.m.set_attribute(vy.INVERSION_FOND)
         self.m.println("MESSAGERIE")
 
         self.default_style()
@@ -45,7 +44,7 @@ class ChatWindow(vy.Window):
         self.m.println(f"Salut {self.username}, petit coquin va!")
 
 
-if __name__ == "__main__"
+if __name__ == "__main__":
     window = LogWindow()
 
     minitel = vy.Minitel("/dev/ttyS0")
