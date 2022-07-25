@@ -9,8 +9,8 @@ class LogWindow(vy.Window):
 
     def draw(self):
         super().draw()
-        self.m.set_attribute(vy.DOUBLE_GRANDEUR)
         self.m.set_attribute(vy.INVERSION_FOND)
+        self.m.set_attribute(vy.DOUBLE_GRANDEUR)
         self.m.println("MESSAGERIE")
 
         self.default_style()
@@ -31,10 +31,27 @@ class LogWindow(vy.Window):
 
         else:
             self.credentials.append(self.buffer)
-            self.buffer = ""
-            username = self.credentials[0]
-            self.credentials = []
+            if not self.is_credentials_valid():
+                self.reset()
+                self.draw()
+                return None
+
+            username = self.get_username()
+            self.reset()
             return ChatWindow(username)
+
+    def reset(self):
+        self.credentials = []
+        self.buffer = ""
+
+    def get_username(self):
+        if len(self.credentials) == 0:
+            return ""
+
+        return self.credentials[0]
+
+    def is_credentials_valid(self):
+        return True
 
 
 class ChatWindow(vy.Window):
