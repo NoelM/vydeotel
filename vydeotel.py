@@ -28,13 +28,13 @@ class Window:
         self.prev_window = None
         self.next_window = None
 
-    def set_minitel(self, m: Minitel) -> None:
+    def set_minitel(self, m) -> None:
         self.m = m
 
-    def set_prev_window(self, w: Window) -> None:
+    def set_prev_window(self, w) -> None:
         self.prev_window = w
 
-    def set_next_window(self, w: Window) -> None:
+    def set_next_window(self, w) -> None:
         self.next_window = w
 
     def default_style(self) -> None:
@@ -50,28 +50,28 @@ class Window:
     def new_key(self, key: int):
         self.buffer += chr(key)
 
-    def envoi(self) -> Window:
+    def envoi(self):
         pass
 
-    def annulation(self) -> Window:
+    def annulation(self):
         pass
 
-    def correction(self) -> Window:
+    def correction(self):
         pass
 
-    def repetition(self) -> Window:
+    def repetition(self):
         pass
 
-    def sommaire(self) -> Window:
+    def sommaire(self):
         pass
 
-    def retour(self) -> Window:
+    def retour(self):
         return self.prev_window
 
-    def guide(self) -> Window:
+    def guide(self):
         pass
 
-    def suite(self) -> Window:
+    def suite(self):
         return self.next_window
 
 
@@ -447,6 +447,6 @@ class Minitel:
             else:
                 self.window.new_key(key)
 
-        def start(self):
-            asyncio.get_event_loop().run_until_end(self.event_loop())
-            asyncio.get_event_loop().run_forever()
+    def start(self):
+        asyncio.get_event_loop().run_until_end(self.event_loop())
+        asyncio.get_event_loop().run_forever()

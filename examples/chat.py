@@ -36,7 +36,7 @@ class LogWindow(vy.Window):
 
 
 class ChatWindow(vy.Window):
-    def __init__(self, username: string):
+    def __init__(self, username: str):
         super().__init__(0, 0, 40, 40)
         self.username = username
 
