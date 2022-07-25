@@ -16,7 +16,10 @@ class Minitel:
 
         self.write_parity = write_parity
         self.read_parity = read_parity
-    
+
+    def set_window(self, w: Window):
+        self.window = w
+
     def write_byte(self, byte: int):
         if self.write_parity:
             even = False
@@ -351,31 +354,42 @@ class Minitel:
         return code
 
     async def event_loop(self):
+        new_window = None
         while True:
+            if new_window is not None:
+                new_window.set_minitel(self)
+                new_window.set_prev_window(self.window)
+                self.window = window
+
             key = self.get_key_code()
             if key == ENVOI:
-                self.app.envoi()
+                new_window = self.window.envoi()
             elif key == ANNULATION:
-                self.app.annulation()
+                new_window = self.window.annulation()
             elif key == REPETITION:
-                self.app.repetition()
+                new_window = self.window.repetition()
             elif key == CORRECTION:
-                self.app.correction()
+                new_window = self.window.correction()
             elif key == SOMMAIRE:
-                self.app.sommaire()
+                new_window = self.window.sommaire()
             elif key == RETOUR:
-                self.app.retour()
+                new_window = self.window.retour()
             elif key == GUIDE:
-                self.app.guide()
+                new_window = self.window.guide()
             elif key == SUITE:
-                self.app.suite()
+                new_window = self.window.suite()
             else:
-                self.buffer += chr(key)                
+                self.window.new_key(key)
+
+        def start(self):
+            asyncio.get_event_loop().run_until_end(self.event_loop())
+            asyncio.get_event_loop().run_forever()
 
 
 class Window:
-    def __init__(self, m: Minitel, x: int, y: int, width: int, height: int, border = False, fg = CARACTERE_BLANC, bg = FOND_NORMAL, typo = GRANDEUR_NORMALE):
-        self.m = m
+    def __init__(self, x: int, y: int, width: int, height: int, border = False, fg = CARACTERE_BLANC, bg = FOND_NORMAL, typo = GRANDEUR_NORMALE):
+        self.buffer = ""
+
         self.x = x
         self.y = y
 
@@ -390,42 +404,48 @@ class Window:
         self.prev_window = None
         self.next_window = None
 
-    def set_prev_window(self, w: Window):
+    def set_minitel(self, m: Minitel) -> None:
+        self.m = m
+
+    def set_prev_window(self, w: Window) -> None:
         self.prev_window = w
 
-    def set_next_window(self, w: Window):
+    def set_next_window(self, w: Window) -> None:
         self.next_window = w
     
-    def default_style(self):
+    def default_style(self) -> None:
         self.m.set_attribute(self.typo)
         self.m.set_attribute(self.fg)
         self.m.set_attribute(self.bg)
 
-    def draw(self):
+    def draw(self) -> None:
         self.m.clean_screen()
         self.m.move_cursor_xy(self.x, self.y)
         self.default_style()
 
-    def envoi(self):
+    def new_key(self, key: int):
+        self.buffer += chr(key)
+
+    def envoi(self) -> Window:
         pass
 
-    def annulation(self):
+    def annulation(self) -> Window:
         pass
 
-    def correction(self):
+    def correction(self) -> Window:
         pass
 
-    def repetition(self):
+    def repetition(self) -> Window:
         pass
 
-    def sommaire(self):
+    def sommaire(self) -> Window:
         pass
 
-    def retour(self):
+    def retour(self) -> Window:
         pass
 
-    def guide(self):
+    def guide(self) -> Window:
         pass
 
-    def suite(self):
+    def suite(self) -> Window:
         pass
