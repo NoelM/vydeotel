@@ -32,7 +32,9 @@ class LogWindow(vy.Window):
         else:
             self.credentials.append(self.buffer)
             self.buffer = ""
-            return ChatWindow(self.credentials[0])
+            username = self.credentials[0]
+            self.credentials = []
+            return ChatWindow(username)
 
 
 class ChatWindow(vy.Window):
@@ -41,6 +43,7 @@ class ChatWindow(vy.Window):
         self.username = username
 
     def draw(self):
+        super().draw()
         self.m.println(f"Salut {self.username}, petit coquin va!")
 
 

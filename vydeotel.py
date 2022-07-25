@@ -428,6 +428,7 @@ class Minitel:
                 new_window.set_minitel(self)
                 new_window.set_prev_window(self.window)
                 self.window = new_window
+                new_window = None
                 self.window.draw()
 
             key = self.get_key_code()
