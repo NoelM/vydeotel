@@ -25,7 +25,7 @@ class LogWindow(vy.Window):
             self.credentials.append(self.buffer)
             self.buffer = ""
 
-            self.m.move_cursor_xy(14, 2)
+            self.m.move_cursor_xy(14, 3)
             self.m.cursor()
             return None
 
