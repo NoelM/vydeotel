@@ -17,7 +17,7 @@ class LogWindow(vy.Window):
         self.m.println("PSEUDO       .............")
         self.m.println("MOT DE PASSE .............")
 
-        self.m.move_cursor_xy(2, 13)
+        self.m.move_cursor_xy(14, 2)
         self.m.cursor()
 
     def envoi(self) -> vy.Window:
@@ -25,7 +25,7 @@ class LogWindow(vy.Window):
             self.credentials.append(self.buffer)
             self.buffer = ""
 
-            self.m.move_cursor_xy(3, 13)
+            self.m.move_cursor_xy(14, 2)
             self.m.cursor()
             return None
 
