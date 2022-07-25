@@ -4,6 +4,8 @@ import vydeotel as vy
 import string
 import random
 import time
+import feedparser
+
 
 class LogWindow(vy.Window):
     def __init__(self):
@@ -79,13 +81,18 @@ class Surprise(vy.Window):
         super().__init__(0, 0, 40, 40)
 
     def draw(self):
-        while True:
-            self.m.set_attribute(vy.ESC)
-            self.m.set_attribute(0x39)
-            self.m.set_attribute(vy.START)
-            self.m.set_attribute(vy.ROULEAU)
-            self.m.print_char(random.choice(string.ascii_letters))
-            time.sleep(0.002)
+        self.m.set_attribute(vy.ESC)
+        self.m.set_attribute(0x39)
+        self.m.set_attribute(vy.START)
+        self.m.set_attribute(vy.ROULEAU)
+        
+        lemonde = feedparser.parse("https://www.lemonde.fr/rss/en_continu.xml")
+
+        for entry in lemonde.entries:
+            self.m.set_attribute(vy.DOUBLE_HAUTEUR)
+            self.m.println(entry.title)
+            self.m.set_attribute(vy.GRANDEUR_NORMALE)
+            self.m.println(entry.description)
 
 
 if __name__ == "__main__":
