@@ -1,6 +1,9 @@
 import sys
 sys.path.append('../')
 import vydeotel as vy
+import string
+import random
+import time
 
 class LogWindow(vy.Window):
     def __init__(self):
@@ -44,6 +47,9 @@ class LogWindow(vy.Window):
             w.set_prev_window(self)
             return w
 
+    def guide(self):
+        return Surprise()
+
     def reset(self):
         self.credentials = []
         self.buffer = ""
@@ -66,6 +72,16 @@ class ChatWindow(vy.Window):
     def draw(self):
         super().draw()
         self.m.println(f"Salut {self.username}, petit coquin va!")
+
+
+class Suprise(vy.Window):
+    def __init__(self):
+        super().__init__(0, 0, 40, 40)
+
+    def draw(self):
+        while True:
+            self.m.write_char(random.choice(string.ascii_letters))
+            time.sleep(0.002)
 
 
 if __name__ == "__main__":
