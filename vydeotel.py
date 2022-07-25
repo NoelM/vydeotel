@@ -450,5 +450,5 @@ class Minitel:
                 self.window.new_key(key)
 
     def start(self):
-        asyncio.get_event_loop().run_until_end(self.event_loop())
+        asyncio.get_event_loop().run_until_complete(self.event_loop())
         asyncio.get_event_loop().run_forever()
