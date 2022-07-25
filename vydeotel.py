@@ -1,3 +1,4 @@
+from re import S
 import time
 
 import serial
@@ -16,9 +17,6 @@ class Minitel:
         self.write_parity = write_parity
         self.read_parity = read_parity
     
-    def set_application(self, app: ApplicationBase):
-        self.app = app
-
     def write_byte(self, byte: int):
         if self.write_parity:
             even = False
@@ -375,68 +373,50 @@ class Minitel:
                 self.buffer += chr(key)                
 
 
-    def start(self):
-        asyncio.get_event_loop().run_until_complete(self.event_loop())
-        asyncio.get_event_loop().run_forever()
+class Window:
+    def __init__(self, m: Minitel, x: int, y: int, width: int, height: int, border = False, fg = CARACTERE_BLANC, bg = FOND_NORMAL, typo = GRANDEUR_NORMALE):
+        self.m = m
+        self.x = x
+        self.y = y
 
+        self.width = width
+        self.heigh = height
+        self.border = border
 
-class VueBase:
-    def __init__(self):
-        pass
-
-    def envoi(self):
-        pass
-
-    def annulation(self):
-        pass
-
-    def repetition(self):
-        pass
-
-    def correction(self):
-        pass
-
-
-class ApplicationBase:
-    def __init__(self):
-        self.vue_active = -1
-        self.vues = map()
-
-    def nouvelles_vues(self, identifiant: int, vue: VueBase):
-        if identifiant in self.vues:
-            return
-
-        self.vues[identifiant] = vue
+        self.fg = fg
+        self.bg = bg
+        self.typo = typo
         
-    def vue_sommaire(self, vue: VueBase):
-        self.sommaire = vue
+        self.prev_window = None
+        self.next_window = None
 
-    def vue_guide(self, vue: VueBase):
-        self.guide = vue
+    def set_prev_window(self, w: Window):
+        self.prev_window = w
+
+    def set_next_window(self, w: Window):
+        self.next_window = w
+    
+    def default_style(self):
+        self.m.set_attribute(self.typo)
+        self.m.set_attribute(self.fg)
+        self.m.set_attribute(self.bg)
+
+    def draw(self):
+        self.m.clean_screen()
+        self.m.move_cursor_xy(self.x, self.y)
+        self.default_style()
 
     def envoi(self):
-        if self.vue_active < 0:
-            return
-
-        self.vues[self.vue_active].envoi()
+        pass
 
     def annulation(self):
-        if self.vue_active < 0:
-            return
-
-        self.vues[self.vue_active].annulation()
+        pass
 
     def correction(self):
-        if self.vue_active < 0:
-            return
-
-        self.vues[self.vue_active].correction()
+        pass
 
     def repetition(self):
-        if self.vue_active < 0:
-            return
-
-        self.vues[self.vue_active].repetition()
+        pass
 
     def sommaire(self):
         pass
