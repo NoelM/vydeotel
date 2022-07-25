@@ -1,5 +1,5 @@
 # vydeotel
-**A python library for Minitel communication through serial port**
+**A Python library for Minitel communication through serial port**
 
 
 ### Credits
