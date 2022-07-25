@@ -9,6 +9,7 @@ class LogWindow(vy.Window):
 
     def draw(self):
         super().draw()
+        self.m.println("")
         self.m.set_attribute(vy.INVERSION_FOND)
         self.m.set_attribute(vy.DOUBLE_GRANDEUR)
         self.m.println("MESSAGERIE")
@@ -17,7 +18,7 @@ class LogWindow(vy.Window):
         self.m.println("PSEUDO       .............")
         self.m.println("MOT DE PASSE .............")
 
-        self.m.move_cursor_xy(14, 2)
+        self.m.move_cursor_xy(14, 3)
         self.m.cursor()
 
     def envoi(self) -> vy.Window:
@@ -25,7 +26,7 @@ class LogWindow(vy.Window):
             self.credentials.append(self.buffer)
             self.buffer = ""
 
-            self.m.move_cursor_xy(14, 3)
+            self.m.move_cursor_xy(14, 4)
             self.m.cursor()
             return None
 
@@ -38,7 +39,10 @@ class LogWindow(vy.Window):
 
             username = self.get_username()
             self.reset()
-            return ChatWindow(username)
+
+            w = ChatWindow(username)
+            w.set_prev_window(self)
+            return w
 
     def reset(self):
         self.credentials = []

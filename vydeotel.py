@@ -44,8 +44,8 @@ class Window:
 
     def draw(self) -> None:
         self.m.clean_screen()
-        self.m.move_cursor_xy(self.x, self.y)
         self.default_style()
+        self.m.move_cursor_xy(self.x, self.y)
 
     def new_key(self, key: int):
         self.buffer += chr(key)
@@ -426,7 +426,6 @@ class Minitel:
         while True:
             if new_window is not None:
                 new_window.set_minitel(self)
-                new_window.set_prev_window(self.window)
                 self.window = new_window
                 new_window = None
                 self.window.draw()
