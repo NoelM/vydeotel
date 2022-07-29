@@ -33,6 +33,7 @@ class LogWindow(Window):
         self.default_style(c)
         c.println("PSEUDO")
         c.println("MOT DE PASSE")
+        self.setup_inputs(c)
 
     def get_active_input(self) -> Optional[Input]:
         if self.active_input < 0:
@@ -58,8 +59,8 @@ class LogWindow(Window):
 
         return ChatWindow(self.get_username())
 
-    def new_key(self, c: cn.Connector, key: int):
-        self.get_active_input().new_char(c, chr(key))
+    def new_key(self, key: int):
+        self.get_active_input().new_char(chr(key))
 
     def reset(self):
         self.credentials = []

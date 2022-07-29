@@ -36,6 +36,11 @@ class Window:
     def new_input(self, inpt: Input):
         self.inputs.append(inpt)
 
+    def setup_inputs(self, c: Connector):
+        if len(self.inputs) > 0:
+            self.active_input = 0
+            self.get_active_input().active(c)
+
     def get_active_input(self) -> Optional[Input]:
         if self.active_input < 0:
             return None
@@ -64,7 +69,7 @@ class Window:
             inpt.draw(c)
         c.move_cursor_xy(self.x, self.y)
 
-    def new_key(self, c: Connector, key: int):
+    def new_key(self, key: int):
         self.buffer += chr(key)
 
     def envoi(self, c: Connector):

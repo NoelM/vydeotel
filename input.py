@@ -34,10 +34,9 @@ class Input:
         else:
             c.no_cursor()
 
-    def new_char(self, c: Connector, char: chr):
+    def new_char(self, char: chr):
         if len(self.buffer) < self.length:
             self.buffer += char
-            c.print_char(char)
 
     def get_buffer(self) -> str:
         return self.buffer
