@@ -35,15 +35,14 @@ def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str,
     mntl.set_attribute(vy.GRANDEUR_NORMALE)
     mntl.println(subtitle)
 
+    input("countdown press enter")
     count_down(mntl, duration)
 
 
 def count_down(mntl: vy.Minitel, duration: int):
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
     for remaining in reversed(range(duration)):
-        mntl.move_cursor_xy(15, 15)
-        mntl.clear_line()
-        mntl.move_cursor_xy(15, 14)
+        mntl.move_cursor_xy(15, 13)
         mntl.clear_line()
         mntl.move_cursor_xy(15, 15)
 
@@ -55,7 +54,7 @@ def count_down(mntl: vy.Minitel, duration: int):
             mntl.set_attribute(vy.CLIGNOTEMENT)
             mntl.set_attribute(vy.INVERSION_FOND)
             mntl.set_attribute(vy.DOUBLE_HAUTEUR)
-            mntl.move_cursor_xy(5, 20)
+            mntl.move_cursor_xy(13, 20)
             mntl.println("< 30 SECONDES")
             mntl.set_attribute(vy.FIXE)
             mntl.set_attribute(vy.CARACTERE_BLANC)
@@ -66,9 +65,9 @@ def count_down(mntl: vy.Minitel, duration: int):
 minitel = vy.Minitel("/dev/ttyS0")
 
 splash(minitel, "DEMO", "SPRINT 22.15")
-time.sleep(5)
+input("squad enter")
 splash(minitel, "SQUAD BLUE", "3 ORATEURS")
-time.sleep(5)
+input("speaker press enter")
 count_down_screen(minitel, "SQUAD BLUE", "Jean Michel", "Des filtres", 90)
 
 
