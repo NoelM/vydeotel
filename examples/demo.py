@@ -20,9 +20,12 @@ def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str,
     mntl.move_cursor_xy(2, 2)
     mntl.set_attribute(vy.DOUBLE_HAUTEUR)
     mntl.set_attribute(vy.INVERSION_FOND)
-    mntl.println(f"{squad.upper()} // {speaker.upper()}")
+    mntl.println(f"{squad.upper()}")
     mntl.move_cursor_xy(2, 5)
-    mntl.set_attribute(vy.INVERSION_FOND)
+    mntl.set_attribute(vy.DOUBLE_GRANDEUR)
+    mntl.set_attribute(vy.FOND_NORMAL)
+    mntl.set_attribute(vy.CARACTERE_BLANC)
+    mntl.println(f"{speaker.upper()}")
     mntl.set_attribute(vy.GRANDEUR_NORMALE)
     mntl.println(subtitle)
 
@@ -32,7 +35,7 @@ def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str,
 def count_down(mntl: vy.Minitel, duration: int):
     mntl.move_cursor_xy(5, 10)
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
-    for remaining in range(duration, -1):
+    for remaining in reversed(range(duration)):
         mntl.clear_line()
         mntl.print(f"{remaining}")
         time.sleep(1)
