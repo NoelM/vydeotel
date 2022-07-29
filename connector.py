@@ -2,8 +2,8 @@ import time
 import serial
 from struct import pack
 
-from window import *
 from utils import *
+from consts import *
 
 
 class Connector:
