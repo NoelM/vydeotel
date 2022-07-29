@@ -9,12 +9,17 @@ def splash(mntl: vy.Minitel, title: str, subtitle: str):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
     mntl.move_cursor_xy(10, 5)
+    mntl.set_attribute(vy.INVERSION_FOND)
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
     mntl.println(title.upper())
+
     mntl.move_cursor_xy(10, 8)
+    mntl.set_attribute(vy.CARACTERE_BLANC)
+    mntl.set_attribute(vy.FOND_NORMAL)
     mntl.set_attribute(vy.DOUBLE_HAUTEUR)
     mntl.set_attribute(vy.CLIGNOTEMENT)
     mntl.println(subtitle.upper())
+    mntl.set_attribute(vy.FIXE)
 
 
 def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str, duration: int):
@@ -32,7 +37,7 @@ def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str,
     mntl.println(f"{speaker.upper()}")
     mntl.move_cursor_xy(5, 8)
 
-    mntl.set_attribute(vy.GRANDEUR_NORMALE)
+    mntl.set_attribute(vy.DOUBLE_HAUTEUR)
     mntl.println(subtitle)
 
     input("countdown press enter")
@@ -63,11 +68,36 @@ def count_down(mntl: vy.Minitel, duration: int):
 
 
 minitel = vy.Minitel("/dev/ttyS0")
+total_duration = 20
 
 splash(minitel, "DEMO", "SPRINT 22.15")
 input("squad enter")
-splash(minitel, "SQUAD BLUE", "3 ORATEURS")
+splash(minitel, "SQUAD BLUE", "2 ORATEURS")
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD BLUE", "Jean Michel", "Des filtres", 90)
+count_down_screen(minitel, "SQUAD BLUE", "Yassin", "New widgets in Explorer Trends", total_duration)
+input("speaker press enter")
+count_down_screen(minitel, "SQUAD BLUE", "Stephane", "Locale middleware, expire date, localization", total_duration)
 
+input("speaker press enter")
+splash(minitel, "SQUAD BLACK", "1 ORATEUR")
+input("speaker press enter")
+count_down_screen(minitel, "SQUAD BLACK", "Anthony", "Activation URL tester", total_duration)
 
+input("speaker press enter")
+splash(minitel, "DATA ANALYTICS", "1 ORATEUR")
+input("speaker press enter")
+count_down_screen(minitel, "DATA ANALYTICS", "Efrain", "Present a use case", total_duration)
+
+input("speaker press enter")
+splash(minitel, "SQUAD ORANGE", "3 ORATEURS")
+input("speaker press enter")
+count_down_screen(minitel, "SQUAD ORANGE", "Younes", "Insertion Strategy", total_duration)
+
+input("speaker press enter")
+count_down_screen(minitel, "SQUAD ORANGE", "Sevket", "Templates PW", total_duration)
+
+input("speaker press enter")
+count_down_screen(minitel, "SQUAD ORANGE", "Camille", "Infra PW and DX subjects", total_duration)
+
+input("speaker press enter")
+splash(minitel, "MERCI ET BON WEEK-END", "TOUS EN RETRO !")
