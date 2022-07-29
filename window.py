@@ -1,6 +1,7 @@
 from consts import *
 from input import *
 from connector import Connector
+from typing import Optional
 
 
 class Window:
@@ -35,7 +36,7 @@ class Window:
     def new_input(self, inpt: Input):
         self.inputs.append(inpt)
 
-    def get_active_input(self) -> Input | None:
+    def get_active_input(self) -> Optional[Input]:
         if self.active_input < 0:
             return None
         return self.inputs[self.active_input]

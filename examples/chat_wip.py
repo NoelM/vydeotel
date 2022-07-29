@@ -3,6 +3,8 @@ sys.path.append('../')
 import connector as cn
 import server as srv
 from input import Input
+from window import Window
+from typing import Optional
 
 import string
 import random
@@ -10,7 +12,7 @@ import time
 import feedparser
 
 
-class LogWindow(cn.Window):
+class LogWindow(Window):
     def __init__(self):
         super().__init__(0, 0, 40, 40)
         self.credentials = []
@@ -32,13 +34,13 @@ class LogWindow(cn.Window):
         c.println("PSEUDO")
         c.println("MOT DE PASSE")
 
-    def get_active_input(self) -> Input | None:
+    def get_active_input(self) -> Optional[Input]:
         if self.active_input < 0:
             return None
 
         return self.inputs[self.active_input]
 
-    def suite(self, c: cn.Connector) -> cn.Window | None:
+    def suite(self, c: cn.Connector) -> Optional[Window]:
         if len(self.credentials) == 0:  # username
             self.credentials.append(self.get_active_input().get_buffer())
             self.active_next_input(c)
@@ -48,7 +50,7 @@ class LogWindow(cn.Window):
 
         return None
 
-    def envoi(self, c: cn.Connector) -> cn.Window | None:
+    def envoi(self, c: cn.Connector) -> Optional[Window]:
         if not self.is_credentials_valid():
             self.reset()
             self.draw(c)
@@ -73,7 +75,7 @@ class LogWindow(cn.Window):
         return True
 
 
-class ChatWindow(cn.Window):
+class ChatWindow(Window):
     def __init__(self, username: str):
         super().__init__(0, 0, 40, 40)
         self.username = username
