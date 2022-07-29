@@ -41,11 +41,11 @@ def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str,
 def count_down(mntl: vy.Minitel, duration: int):
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
     for remaining in reversed(range(duration)):
-        mntl.move_cursor_xy(10, 20)
+        mntl.move_cursor_xy(15, 15)
         mntl.clear_line()
-        mntl.move_cursor_xy(10, 19)
+        mntl.move_cursor_xy(15, 14)
         mntl.clear_line()
-        mntl.move_cursor_xy(10, 20)
+        mntl.move_cursor_xy(15, 15)
 
         m, s = divmod(remaining, 60)
         mntl.print("{:02d}:{:02d}".format(m, s))
