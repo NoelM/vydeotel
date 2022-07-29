@@ -51,6 +51,17 @@ def count_down(mntl: vy.Minitel, duration: int):
         mntl.print("{:02d}:{:02d}".format(m, s))
         time.sleep(1)
 
+        if remaining == 30:
+            mntl.set_attribute(vy.CLIGNOTEMENT)
+            mntl.set_attribute(vy.INVERSION_FOND)
+            mntl.set_attribute(vy.DOUBLE_GRANDEUR)
+            mntl.move_cursor_xy(15, 20)
+            mntl.println("< 30 SECONDES")
+            mntl.set_attribute(vy.FIXE)
+            mntl.set_attribute(vy.CARACTERE_BLANC)
+            mntl.set_attribute(vy.FOND_NORMAL)
+            mntl.set_attribute(vy.DOUBLE_GRANDEUR)
+
 
 minitel = vy.Minitel("/dev/ttyS0")
 
