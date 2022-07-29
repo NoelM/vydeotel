@@ -76,10 +76,10 @@ class Window:
         pass
 
     def annulation(self, c: Connector):
-        pass
+        self.get_active_input().annulation(c)
 
     def correction(self, c: Connector):
-        pass
+        self.get_active_input().correction(c)
 
     def repetition(self, c: Connector):
         pass
