@@ -34,4 +34,4 @@ class Server:
             elif key == SUITE:
                 new_window = self.window.suite(self.connector)
             else:
-                self.window.new_key(self.connector, key)
+                self.window.new_key(key)
