@@ -54,8 +54,8 @@ def count_down(mntl: vy.Minitel, duration: int):
         if remaining == 30:
             mntl.set_attribute(vy.CLIGNOTEMENT)
             mntl.set_attribute(vy.INVERSION_FOND)
-            mntl.set_attribute(vy.DOUBLE_GRANDEUR)
-            mntl.move_cursor_xy(15, 20)
+            mntl.set_attribute(vy.DOUBLE_HAUTEUR)
+            mntl.move_cursor_xy(5, 20)
             mntl.println("< 30 SECONDES")
             mntl.set_attribute(vy.FIXE)
             mntl.set_attribute(vy.CARACTERE_BLANC)
