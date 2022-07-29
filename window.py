@@ -47,12 +47,12 @@ class Window:
         return self.inputs[self.active_input]
 
     def active_next_input(self, c: Connector):
-        if len(self.inputs) < self.active_input:
+        if self.active_input < len(self.inputs):
             self.active_input += 1
             self.get_active_input().active(c)
 
     def active_prev_input(self, c: Connector):
-        if len(self.inputs) < self.active_input:
+        if self.active_input > 0:
             self.active_input -= 1
             self.get_active_input().active(c)
 
