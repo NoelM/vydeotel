@@ -81,6 +81,7 @@ class Surprise(vy.Window):
         super().__init__(0, 0, 40, 40)
 
     def draw(self):
+        super().draw()
         self.m.set_attribute(vy.ESC)
         self.m.set_attribute(0x39)
         self.m.set_attribute(vy.START)
@@ -89,10 +90,15 @@ class Surprise(vy.Window):
         lemonde = feedparser.parse("https://www.lemonde.fr/rss/en_continu.xml")
 
         for entry in lemonde.entries:
+            self.m.clean_screen()
+            self.m.move_cursor_xy(0, 1)
             self.m.set_attribute(vy.DOUBLE_HAUTEUR)
             self.m.println(entry.title)
             self.m.set_attribute(vy.GRANDEUR_NORMALE)
+            self.m.println(entry.published)
+            self.m.println("")
             self.m.println(entry.description)
+            time.sleep(2)
 
 
 if __name__ == "__main__":
