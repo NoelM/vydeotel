@@ -1,90 +1,18 @@
-from re import S
 import time
-
 import serial
-import asyncio
 from struct import pack
 
-from consts import *
+from window import *
 from utils import *
 
 
-class Window:
-    def __init__(self, x: int, y: int, width: int, height: int, border=False, fg=CARACTERE_BLANC, bg=FOND_NORMAL,
-                 typo=GRANDEUR_NORMALE):
-        self.buffer = ""
-
-        self.x = x
-        self.y = y
-
-        self.width = width
-        self.height = height
-        self.border = border
-
-        self.fg = fg
-        self.bg = bg
-        self.typo = typo
-
-        self.prev_window = None
-        self.next_window = None
-
-    def set_minitel(self, m) -> None:
-        self.m = m
-
-    def set_prev_window(self, w) -> None:
-        self.prev_window = w
-
-    def set_next_window(self, w) -> None:
-        self.next_window = w
-
-    def default_style(self) -> None:
-        self.m.set_attribute(self.typo)
-        self.m.set_attribute(self.fg)
-        self.m.set_attribute(self.bg)
-
-    def draw(self) -> None:
-        self.m.clean_screen()
-        self.default_style()
-        self.m.move_cursor_xy(self.x, self.y)
-
-    def new_key(self, key: int):
-        self.buffer += chr(key)
-
-    def envoi(self):
-        pass
-
-    def annulation(self):
-        pass
-
-    def correction(self):
-        pass
-
-    def repetition(self):
-        pass
-
-    def sommaire(self):
-        pass
-
-    def retour(self):
-        return self.prev_window
-
-    def guide(self):
-        pass
-
-    def suite(self):
-        return self.next_window
-
-
-class Minitel:
+class Connector:
     def __init__(self, port, write_parity=True, read_parity=True):
         self.serial = serial.Serial(port, 1200, timeout=1000)
         self.current_size = GRANDEUR_NORMALE
 
         self.write_parity = write_parity
         self.read_parity = read_parity
-
-    def set_window(self, w: Window):
-        self.window = w
 
     def write_byte(self, byte: int):
         if self.write_parity:
@@ -418,38 +346,3 @@ class Minitel:
                         code = (code << 8) + self.read_byte()
 
         return code
-
-    async def event_loop(self):
-        new_window = None
-        self.window.set_minitel(self)
-        self.window.draw()
-        while True:
-            if new_window is not None:
-                new_window.set_minitel(self)
-                self.window = new_window
-                new_window = None
-                self.window.draw()
-
-            key = self.get_key_code()
-            if key == ENVOI:
-                new_window = self.window.envoi()
-            elif key == ANNULATION:
-                new_window = self.window.annulation()
-            elif key == REPETITION:
-                new_window = self.window.repetition()
-            elif key == CORRECTION:
-                new_window = self.window.correction()
-            elif key == SOMMAIRE:
-                new_window = self.window.sommaire()
-            elif key == RETOUR:
-                new_window = self.window.retour()
-            elif key == GUIDE:
-                new_window = self.window.guide()
-            elif key == SUITE:
-                new_window = self.window.suite()
-            else:
-                self.window.new_key(key)
-
-    def start(self):
-        asyncio.get_event_loop().run_until_complete(self.event_loop())
-        asyncio.get_event_loop().run_forever()
