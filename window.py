@@ -58,11 +58,11 @@ class Window:
 
     def draw(self, c: Connector) -> None:
         c.clean_screen()
-        c.move_cursor_xy(self.x, self.y)
         self.default_style(c)
 
         for inpt in self.inputs:
             inpt.draw(c)
+        c.move_cursor_xy(self.x, self.y)
 
     def new_key(self, c: Connector, key: int):
         self.buffer += chr(key)
