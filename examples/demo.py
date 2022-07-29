@@ -41,21 +41,24 @@ def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str,
 def count_down(mntl: vy.Minitel, duration: int):
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
     for remaining in reversed(range(duration)):
-        mntl.move_cursor_xy(15, 13)
-        mntl.clear_line()
-        mntl.move_cursor_xy(15, 15)
+        try:
+            mntl.move_cursor_xy(15, 13)
+            mntl.clear_line()
+            mntl.move_cursor_xy(15, 15)
 
-        m, s = divmod(remaining, 60)
-        mntl.print("{:02d}:{:02d}".format(m, s))
-        time.sleep(1)
+            m, s = divmod(remaining, 60)
+            mntl.print("{:02d}:{:02d}".format(m, s))
+            time.sleep(1)
 
-        if remaining == 30:
-            mntl.set_attribute(vy.CLIGNOTEMENT)
-            mntl.set_attribute(vy.DOUBLE_HAUTEUR)
-            mntl.move_cursor_xy(13, 20)
-            mntl.println("< 30 SECONDES")
-            mntl.set_attribute(vy.FIXE)
-            mntl.set_attribute(vy.DOUBLE_GRANDEUR)
+            if remaining == 30:
+                mntl.set_attribute(vy.CLIGNOTEMENT)
+                mntl.set_attribute(vy.DOUBLE_HAUTEUR)
+                mntl.move_cursor_xy(13, 20)
+                mntl.println("< 30 SECONDES")
+                mntl.set_attribute(vy.FIXE)
+                mntl.set_attribute(vy.DOUBLE_GRANDEUR)
+        except KeyboardInterrupt:
+            break
 
 
 minitel = vy.Minitel("/dev/ttyS0")
