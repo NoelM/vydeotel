@@ -1,12 +1,14 @@
-from connector import Connector
+from minitel import Minitel
+from utils import between_bounds
 
 
 class Input:
-    def __init__(self, x: int, y: int, length: int, dots=True):
-        self.x = x
-        self.y = y
+    def __init__(self, minitel: Minitel, column: int, row: int, length: int, dots=True):
+        self.minitel = minitel
 
-        self.length = length
+        self.column = between_bounds(column, 1, minitel.columns)
+        self.row = between_bounds(row, 1, minitel.rows)
+        self.length = between_bounds(length, 1, minitel.columns - self.column)
 
         self.dots = dots
         self.cursor = True
@@ -19,38 +21,43 @@ class Input:
     def cursor_off(self):
         self.cursor = False
 
-    def draw(self, c: Connector):
-        c.move_cursor_xy(self.x, self.y)
+    def draw(self):
+        self.minitel.move_cursor_xy(self.column, self.row)
 
         if self.dots:
             for i in range(self.length):
-                c.print_char(".")
+                self.minitel.print_char(".")
 
-    def active(self, c: Connector):
-        c.move_cursor_xy(self.x, self.y)
+    def active(self):
+        self.minitel.move_cursor_xy(self.column, self.row)
 
         if self.cursor:
-            c.cursor()
+            self.minitel.cursor()
         else:
-            c.no_cursor()
+            self.minitel.no_cursor()
 
     def new_char(self, char: chr):
         if len(self.buffer) < self.length:
             self.buffer += char
+        else:
+            self.minitel.clear_line_from_cursor()
+            self.minitel.move_cursor_left(1)
 
     def get_buffer(self) -> str:
         return self.buffer
 
-    def correction(self, c: Connector):
+    def correction(self):
         if len(self.buffer) > 0:
             self.buffer = self.buffer[:-1]
-            c.move_cursor_left(1)
-            if self.dots:
-                c.print_char(".")
-            else:
-                c.clear_line_from_cursor()
+            self.minitel.move_cursor_left(1)
 
-    def annulation(self, c: Connector):
-        c.move_cursor_xy(self.x, self.y)
-        c.clear_line_from_cursor()
-        self.draw(c)
+            if self.dots:
+                self.minitel.print_char(".")
+                self.minitel.move_cursor_left(1)
+            else:
+                self.minitel.clear_line_from_cursor()
+
+    def annulation(self):
+        self.minitel.move_cursor_xy(self.column, self.row)
+        self.minitel.clear_line_from_cursor()
+        self.draw()

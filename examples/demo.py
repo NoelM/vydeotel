@@ -2,10 +2,10 @@ import sys
 import time
 
 sys.path.append('../')
-import connector as vy
+import minitel as vy
 
 
-def splash(mntl: vy.Connector, title: str, subtitle: str):
+def splash(mntl: vy.Minitel, title: str, subtitle: str):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
     mntl.move_cursor_xy(10, 5)
@@ -19,7 +19,7 @@ def splash(mntl: vy.Connector, title: str, subtitle: str):
     mntl.set_attribute(vy.FIXE)
 
 
-def count_down_screen(mntl: vy.Connector, squad: str, speaker: str, subtitle: str, duration: int):
+def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str, duration: int):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
     mntl.move_cursor_xy(5, 3)
@@ -38,7 +38,7 @@ def count_down_screen(mntl: vy.Connector, squad: str, speaker: str, subtitle: st
     count_down(mntl, duration)
 
 
-def count_down(mntl: vy.Connector, duration: int):
+def count_down(mntl: vy.Minitel, duration: int):
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
     for remaining in reversed(range(duration)):
         try:
@@ -61,7 +61,7 @@ def count_down(mntl: vy.Connector, duration: int):
             break
 
 
-minitel = vy.Connector("/dev/ttyS0")
+minitel = vy.Minitel("/dev/ttyS0")
 total_duration = 20
 
 splash(minitel, "DEMO", "SPRINT 22.15")

@@ -1,9 +1,9 @@
 import sys
 sys.path.append('../')
-import connector as cn
+import minitel as cn
 import server as srv
 from input import Input
-from window import Window
+from form import Form
 from typing import Optional
 
 import string
@@ -12,9 +12,9 @@ import time
 import feedparser
 
 
-class LogWindow(Window):
+class LogWindow(Form):
     def __init__(self):
-        super().__init__(0, 0, 40, 40)
+        super().__init__(1, 1, 40, 40)
         self.credentials = []
 
         self.inputs = [
@@ -23,7 +23,7 @@ class LogWindow(Window):
         ]
         self.active_input = 0
 
-    def draw(self, c: cn.Connector):
+    def draw(self, c: cn.Minitel):
         super().draw(c)
         c.println("")
         c.set_attribute(cn.INVERSION_FOND)
@@ -41,7 +41,7 @@ class LogWindow(Window):
 
         return self.inputs[self.active_input]
 
-    def suite(self, c: cn.Connector) -> Optional[Window]:
+    def suite(self, c: cn.Minitel) -> Optional[Form]:
         if len(self.credentials) == 0:  # username
             self.credentials.append(self.get_active_input().get_buffer())
             self.active_next_input(c)
@@ -51,7 +51,7 @@ class LogWindow(Window):
 
         return None
 
-    def envoi(self, c: cn.Connector) -> Optional[Window]:
+    def envoi(self, c: cn.Minitel) -> Optional[Form]:
         if not self.is_credentials_valid():
             self.reset()
             self.draw(c)
@@ -76,19 +76,19 @@ class LogWindow(Window):
         return True
 
 
-class ChatWindow(Window):
+class ChatWindow(Form):
     def __init__(self, username: str):
         super().__init__(0, 0, 40, 40)
         self.username = username
 
-    def draw(self, c: cn.Connector):
+    def draw(self, c: cn.Minitel):
         super().draw(c)
         c.println(f"Salut {self.username}, petit coquin va!")
 
 
 if __name__ == "__main__":
     window = LogWindow()
-    minitel = cn.Connector("/dev/ttyS0")
+    minitel = cn.Minitel("/dev/ttyS0")
 
     server = srv.Server(minitel, window)
     server.start()

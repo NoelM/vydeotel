@@ -1,9 +1,9 @@
-from window import *
-from connector import *
+from form import *
+from minitel import *
 
 
 class Server:
-    def __init__(self, connector: Connector, window: Window):
+    def __init__(self, connector: Minitel, window: Form):
         self.connector = connector
         self.window = window
 

@@ -6,13 +6,16 @@ from utils import *
 from consts import *
 
 
-class Connector:
+class Minitel:
     def __init__(self, port, write_parity=True, read_parity=True):
         self.serial = serial.Serial(port, 1200, timeout=1000)
         self.current_size = GRANDEUR_NORMALE
 
         self.write_parity = write_parity
         self.read_parity = read_parity
+
+        self.columns = 40
+        self.rows = 25
 
     def write_byte(self, byte: int):
         if self.write_parity:
