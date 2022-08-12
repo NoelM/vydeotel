@@ -95,6 +95,7 @@ count_down_screen(minitel, "SQUAD GREEN", "NABIL", "Visualization Card in Scenar
 
 input("squad enter")
 splash_squad(minitel, "PINK", "2 SPEAKERS")
+input("speaker press enter")
 count_down_screen(minitel, "SQUAD PINK", "AUREL & AYMEN", "Airbyte MVP", "Connections from the Django Admin", 2*total_duration)
 
 input("speaker press enter")
