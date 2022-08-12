@@ -12,7 +12,7 @@ def splash(mntl: vy.Minitel, title: str, subtitle: str):
     display_vdt(mntl, "3615demo.vdt")
 
     mntl.text_mode()
-    mntl.move_cursor_xy(10, 18)
+    mntl.move_cursor_xy(8, 19)
     mntl.set_attribute(vy.CARACTERE_BLANC)
     mntl.set_attribute(vy.FOND_NORMAL)
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
