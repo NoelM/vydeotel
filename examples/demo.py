@@ -6,7 +6,7 @@ import minitel as vy
 from utils import display_vdt
 
 
-def splash(mntl: vy.Minitel, title: str, subtitle: str):
+def splash_demo(mntl: vy.Minitel, sprint: str):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
     display_vdt(mntl, "3615demo.vdt")
@@ -16,20 +16,25 @@ def splash(mntl: vy.Minitel, title: str, subtitle: str):
     mntl.set_attribute(vy.CARACTERE_BLANC)
     mntl.set_attribute(vy.FOND_NORMAL)
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
-    mntl.println(subtitle.upper())
+    mntl.println(sprint.upper())
 
-def splash_squad(mntl: vy.Minitel, title: str, subtitle: str):
+def splash_squad(mntl: vy.Minitel, squad_name: str, speakers: str):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
-    mntl.move_cursor_xy(10, 5)
-    mntl.set_attribute(vy.DOUBLE_GRANDEUR)
-    mntl.println(title.upper())
+    display_vdt(mntl, "squad.vdt")
 
-    mntl.move_cursor_xy(10, 8)
-    mntl.set_attribute(vy.DOUBLE_HAUTEUR)
-    mntl.set_attribute(vy.CLIGNOTEMENT)
-    mntl.println(subtitle.upper())
-    mntl.set_attribute(vy.FIXE)
+    mntl.text_mode()
+    mntl.move_cursor_xy(8, 13)
+    mntl.set_attribute(vy.CARACTERE_NOIR)
+    mntl.set_attribute(vy.FOND_BLANC)
+    mntl.set_attribute(vy.DOUBLE_GRANDEUR)
+    mntl.println(squad_name.upper())
+
+    mntl.move_cursor_xy(8, 17)
+    mntl.set_attribute(vy.CARACTERE_BLANC)
+    mntl.set_attribute(vy.FOND_NORMAL)
+    mntl.set_attribute(vy.DOUBLE_LARGEUR)
+    mntl.println(speakers.upper())
 
 
 def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str, duration: int):
@@ -77,26 +82,26 @@ def count_down(mntl: vy.Minitel, duration: int):
 minitel = vy.Minitel("/dev/ttyS0")
 total_duration = 20
 
-splash(minitel, "DEMO", "SPRINT 22.15")
+splash_demo(minitel, "DEMO", "SPRINT 22.15")
 input("squad enter")
-splash(minitel, "SQUAD BLUE", "2 ORATEURS")
+splash_demo(minitel, "SQUAD BLUE", "2 ORATEURS")
 input("speaker press enter")
 count_down_screen(minitel, "SQUAD BLUE", "Yassin", "New widgets in Explorer Trends", total_duration)
 input("speaker press enter")
 count_down_screen(minitel, "SQUAD BLUE", "Stephane", "Locale middleware, expire date, localization", total_duration)
 
 input("speaker press enter")
-splash(minitel, "SQUAD BLACK", "1 ORATEUR")
+splash_demo(minitel, "SQUAD BLACK", "1 ORATEUR")
 input("speaker press enter")
 count_down_screen(minitel, "SQUAD BLACK", "Anthony", "Activation URL tester", total_duration)
 
 input("speaker press enter")
-splash(minitel, "DATA ANALYTICS", "1 ORATEUR")
+splash_demo(minitel, "DATA ANALYTICS", "1 ORATEUR")
 input("speaker press enter")
 count_down_screen(minitel, "DATA ANALYTICS", "Efrain", "Present a use case", total_duration)
 
 input("speaker press enter")
-splash(minitel, "SQUAD ORANGE", "3 ORATEURS")
+splash_demo(minitel, "SQUAD ORANGE", "3 ORATEURS")
 input("speaker press enter")
 count_down_screen(minitel, "SQUAD ORANGE", "Younes", "Insertion Strategy", total_duration)
 
@@ -107,4 +112,4 @@ input("speaker press enter")
 count_down_screen(minitel, "SQUAD ORANGE", "Camille", "Infra PW and DX subjects", total_duration)
 
 input("speaker press enter")
-splash(minitel, "MERCI ET BON WEEK-END", "TOUS EN RETRO !")
+splash_demo(minitel, "MERCI ET BON WEEK-END", "TOUS EN RETRO !")
