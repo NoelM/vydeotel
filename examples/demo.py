@@ -11,15 +11,10 @@ def splash(mntl: vy.Minitel, title: str, subtitle: str):
     mntl.set_attribute(vy.FIXE)
     display_vdt(mntl, "3615demo.vdt")
 
-    #mntl.move_cursor_xy(10, 5)
-    #mntl.set_attribute(vy.DOUBLE_GRANDEUR)
-    #mntl.println(title.upper())
-
-    #mntl.move_cursor_xy(10, 8)
-    #mntl.set_attribute(vy.DOUBLE_HAUTEUR)
-    #mntl.set_attribute(vy.CLIGNOTEMENT)
-    #mntl.println(subtitle.upper())
-    #mntl.set_attribute(vy.FIXE)
+    mntl.text_mode()
+    mntl.move_cursor_xy(10, 8)
+    mntl.set_attribute(vy.DOUBLE_GRANDEUR)
+    mntl.println(subtitle.upper())
 
 def splash_squad(mntl: vy.Minitel, title: str, subtitle: str):
     mntl.clean_screen()
