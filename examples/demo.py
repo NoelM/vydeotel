@@ -3,9 +3,25 @@ import time
 
 sys.path.append('../')
 import minitel as vy
+from utils import display_vdt
 
 
 def splash(mntl: vy.Minitel, title: str, subtitle: str):
+    mntl.clean_screen()
+    mntl.set_attribute(vy.FIXE)
+    display_vdt(mntl, "3615demo.vdt")
+
+    #mntl.move_cursor_xy(10, 5)
+    #mntl.set_attribute(vy.DOUBLE_GRANDEUR)
+    #mntl.println(title.upper())
+
+    #mntl.move_cursor_xy(10, 8)
+    #mntl.set_attribute(vy.DOUBLE_HAUTEUR)
+    #mntl.set_attribute(vy.CLIGNOTEMENT)
+    #mntl.println(subtitle.upper())
+    #mntl.set_attribute(vy.FIXE)
+
+def splash_squad(mntl: vy.Minitel, title: str, subtitle: str):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
     mntl.move_cursor_xy(10, 5)

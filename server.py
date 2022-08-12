@@ -9,7 +9,7 @@ class Server:
 
     def start(self):
         new_window = None
-        self.window.draw(self.connector)
+        self.window.draw()
         while True:
             if new_window is not None:
                 self.window = new_window
