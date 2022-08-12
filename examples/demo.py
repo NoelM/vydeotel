@@ -51,7 +51,7 @@ def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, line1: str, li
     mntl.println(line1)
 
     if line2 != "":
-        mntl.move_cursor_right(5)
+        mntl.move_cursor_xy(5, 9)
         mntl.set_attribute(vy.DOUBLE_HAUTEUR)
         mntl.println(line2)
 
