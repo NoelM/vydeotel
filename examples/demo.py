@@ -82,26 +82,26 @@ def count_down(mntl: vy.Minitel, duration: int):
 minitel = vy.Minitel("/dev/ttyS0")
 total_duration = 20
 
-splash_demo(minitel, "DEMO", "SPRINT 22.15")
+splash_demo(minitel, "SPRINT 22.15")
 input("squad enter")
-splash_demo(minitel, "SQUAD BLUE", "2 ORATEURS")
+splash_squad(minitel, "SQUAD BLUE", "2 ORATEURS")
 input("speaker press enter")
 count_down_screen(minitel, "SQUAD BLUE", "Yassin", "New widgets in Explorer Trends", total_duration)
 input("speaker press enter")
 count_down_screen(minitel, "SQUAD BLUE", "Stephane", "Locale middleware, expire date, localization", total_duration)
 
 input("speaker press enter")
-splash_demo(minitel, "SQUAD BLACK", "1 ORATEUR")
+splash_squad(minitel, "SQUAD BLACK", "1 ORATEUR")
 input("speaker press enter")
 count_down_screen(minitel, "SQUAD BLACK", "Anthony", "Activation URL tester", total_duration)
 
 input("speaker press enter")
-splash_demo(minitel, "DATA ANALYTICS", "1 ORATEUR")
+splash_squad(minitel, "DATA ANALYTICS", "1 ORATEUR")
 input("speaker press enter")
 count_down_screen(minitel, "DATA ANALYTICS", "Efrain", "Present a use case", total_duration)
 
 input("speaker press enter")
-splash_demo(minitel, "SQUAD ORANGE", "3 ORATEURS")
+splash_squad(minitel, "SQUAD ORANGE", "3 ORATEURS")
 input("speaker press enter")
 count_down_screen(minitel, "SQUAD ORANGE", "Younes", "Insertion Strategy", total_duration)
 
@@ -112,4 +112,4 @@ input("speaker press enter")
 count_down_screen(minitel, "SQUAD ORANGE", "Camille", "Infra PW and DX subjects", total_duration)
 
 input("speaker press enter")
-splash_demo(minitel, "MERCI ET BON WEEK-END", "TOUS EN RETRO !")
+splash_squad(minitel, "MERCI ET BON WEEK-END", "TOUS EN RETRO !")
