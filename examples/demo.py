@@ -69,6 +69,7 @@ def count_down(mntl: vy.Minitel, duration: int):
             mntl.move_cursor_xy(15, 15)
 
             m, s = divmod(remaining, 60)
+            mntl.set_attribute(vy.DOUBLE_GRANDEUR)
             mntl.print("{:02d}:{:02d}".format(m, s))
             time.sleep(1)
 
@@ -82,7 +83,7 @@ def count_down(mntl: vy.Minitel, duration: int):
             elif remaining < 30:
                 mntl.move_cursor_xy(random.randint(1, 40), random.randint(0, 25))
                 mntl.graphic_mode()
-                mntl.print_char(0xF5)
+                mntl.write_byte(0x5F)
                 mntl.text_mode()
 
         except KeyboardInterrupt:
