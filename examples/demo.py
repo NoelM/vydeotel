@@ -24,7 +24,7 @@ def splash_squad(mntl: vy.Minitel, squad_name: str, speakers: str):
     display_vdt(mntl, "squad.vdt")
 
     mntl.text_mode()
-    mntl.move_cursor_xy(8, 13)
+    mntl.move_cursor_xy(8, 15)
     mntl.set_attribute(vy.CARACTERE_NOIR)
     mntl.set_attribute(vy.FOND_BLANC)
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
@@ -84,7 +84,7 @@ total_duration = 20
 
 splash_demo(minitel, "SPRINT 22.15")
 input("squad enter")
-splash_squad(minitel, "SQUAD BLUE", "2 ORATEURS")
+splash_squad(minitel, "BLUE", "2 ORATEURS")
 input("speaker press enter")
 count_down_screen(minitel, "SQUAD BLUE", "Yassin", "New widgets in Explorer Trends", total_duration)
 input("speaker press enter")
