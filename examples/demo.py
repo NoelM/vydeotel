@@ -1,3 +1,4 @@
+import random
 import sys
 import time
 
@@ -78,6 +79,12 @@ def count_down(mntl: vy.Minitel, duration: int):
                 mntl.println("< 30 SECONDES")
                 mntl.set_attribute(vy.FIXE)
                 mntl.set_attribute(vy.DOUBLE_GRANDEUR)
+            elif remaining < 30:
+                mntl.move_cursor_xy(random.randint(1, 40), random.randint(0, 25))
+                mntl.graphic_mode()
+                mntl.print_char(0xF5)
+                mntl.text_mode()
+
         except KeyboardInterrupt:
             break
 
