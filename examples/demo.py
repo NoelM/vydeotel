@@ -75,7 +75,7 @@ def count_down(mntl: vy.Minitel, duration: int):
 
             if remaining < 30:
                 mntl.graphic_mode()
-                for _ in range(3):
+                for _ in range(10):
                     mntl.move_cursor_xy(random.randint(1, 40), random.randint(0, 25))
                     mntl.write_byte(0x5F)
                 mntl.text_mode()
