@@ -38,20 +38,20 @@ def splash_squad(mntl: vy.Minitel, squad_name: str, speakers: str):
 def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, line1: str, line2: str, duration: int):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
-    mntl.move_cursor_xy(5, 3)
+    mntl.move_cursor_xy(5, 2)
     mntl.set_attribute(vy.DOUBLE_HAUTEUR)
     mntl.println(f"{squad.upper()}")
 
     mntl.move_cursor_xy(5, 7)
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
-    mntl.println(f"{speaker.upper()}")
+    mntl.println(f"== {speaker.upper()} ==")
 
     mntl.move_cursor_xy(5, 8)
     mntl.set_attribute(vy.DOUBLE_HAUTEUR)
     mntl.println(line1)
 
     if line2 != "":
-        mntl.move_cursor_xy(5, 9)
+        mntl.move_cursor_xy(5, 10)
         mntl.set_attribute(vy.DOUBLE_HAUTEUR)
         mntl.println(line2)
 
