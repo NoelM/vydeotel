@@ -24,20 +24,18 @@ def splash_squad(mntl: vy.Minitel, squad_name: str, speakers: str):
     display_vdt(mntl, "squad.vdt")
 
     mntl.text_mode()
-    mntl.move_cursor_xy(8, 15)
+    mntl.move_cursor_xy(5, 15)
     mntl.set_attribute(vy.CARACTERE_NOIR)
-    mntl.set_attribute(vy.FOND_BLANC)
+    mntl.set_attribute(vy.FOND_NORMAL)
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
     mntl.println(squad_name.upper())
 
-    mntl.move_cursor_xy(8, 17)
-    mntl.set_attribute(vy.CARACTERE_BLANC)
-    mntl.set_attribute(vy.FOND_NORMAL)
+    mntl.move_cursor_xy(5, 18)
     mntl.set_attribute(vy.DOUBLE_LARGEUR)
     mntl.println(speakers.upper())
 
 
-def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str, duration: int):
+def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, line1: str, line2: str, duration: int):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
     mntl.move_cursor_xy(5, 3)
@@ -47,10 +45,15 @@ def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, subtitle: str,
     mntl.move_cursor_xy(5, 7)
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
     mntl.println(f"{speaker.upper()}")
-    mntl.move_cursor_xy(5, 8)
 
-    mntl.set_attribute(vy.DOUBLE_HAUTEUR)
-    mntl.println(subtitle)
+    mntl.move_cursor_xy(5, 8)
+    mntl.set_attribute(vy.DOUBLE_LARGEUR)
+    mntl.println(line1)
+
+    if line2 != "":
+        mntl.move_cursor_left(5)
+        mntl.set_attribute(vy.DOUBLE_LARGEUR)
+        mntl.println(line2)
 
     input("countdown press enter")
     count_down(mntl, duration)
