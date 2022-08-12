@@ -47,12 +47,12 @@ def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, line1: str, li
     mntl.println(f"{speaker.upper()}")
 
     mntl.move_cursor_xy(5, 8)
-    mntl.set_attribute(vy.DOUBLE_LARGEUR)
+    mntl.set_attribute(vy.DOUBLE_HAUTEUR)
     mntl.println(line1)
 
     if line2 != "":
-        mntl.move_cursor_left(5)
-        mntl.set_attribute(vy.DOUBLE_LARGEUR)
+        mntl.move_cursor_right(5)
+        mntl.set_attribute(vy.DOUBLE_HAUTEUR)
         mntl.println(line2)
 
     input("countdown press enter")
