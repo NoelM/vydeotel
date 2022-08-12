@@ -85,36 +85,45 @@ def count_down(mntl: vy.Minitel, duration: int):
 
 
 minitel = vy.Minitel("/dev/ttyS0")
-total_duration = 20
+total_duration = 150
 
-splash_demo(minitel, "SPRINT 22.15")
+splash_demo(minitel, "SPRINT 22.16")
 input("squad enter")
-splash_squad(minitel, "BLUE", "2 ORATEURS")
+splash_squad(minitel, "GREEN", "1 SPEAKER")
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD BLUE", "Yassin", "New widgets in Explorer Trends", "bla bla", total_duration)
-input("speaker press enter")
-count_down_screen(minitel, "SQUAD BLUE", "Stephane", "Locale middleware, expire date, localization", "",  total_duration)
+count_down_screen(minitel, "SQUAD GREEN", "NABIL", "Visualization Card in Scenario ", "& KW Groups", total_duration)
+
+input("squad enter")
+splash_squad(minitel, "PINK", "2 SPEAKERS")
+count_down_screen(minitel, "SQUAD PINK", "AUREL & AYMEN", "Airbyte MVP", "Connections from the Django Admin", 2*total_duration)
 
 input("speaker press enter")
-splash_squad(minitel, "SQUAD BLACK", "1 ORATEUR")
+splash_squad(minitel, "BLUE", "3 SPEAKERS")
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD BLACK", "Anthony", "Activation URL tester", "", total_duration)
+count_down_screen(minitel, "SQUAD BLUE", "YASSIN", "SEMRush", "", total_duration)
+input("speaker press enter")
+count_down_screen(minitel, "SQUAD BLUE", "HAIKEL", "Action Board", "", total_duration)
+input("speaker press enter")
+count_down_screen(minitel, "SQUAD BLUE", "STEPHANE", "Localization", "", total_duration)
 
 input("speaker press enter")
-splash_squad(minitel, "DATA ANALYTICS", "1 ORATEUR")
+splash_squad(minitel, "DATA ANALYTICS", "1 SPEAKER")
 input("speaker press enter")
-count_down_screen(minitel, "DATA ANALYTICS", "Efrain", "Present a use case", "", total_duration)
+count_down_screen(minitel, "DATA ANALYTICS", "LEA", "KPIs for Data Quality", "", total_duration)
 
 input("speaker press enter")
-splash_squad(minitel, "SQUAD ORANGE", "3 ORATEURS")
+splash_squad(minitel, "ORANGE", "2 SPEAKERS")
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD ORANGE", "Younes", "Insertion Strategy", "", total_duration)
+count_down_screen(minitel, "SQUAD ORANGE", "Sevket", "Template Preview", "New module selection modal", total_duration)
+input("speaker press enter")
+count_down_screen(minitel, "SQUAD ORANGE", "Younes", "PW Impact", "CWV investigation", total_duration)
 
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD ORANGE", "Sevket", "Templates PW", "", total_duration)
-
+splash_squad(minitel, "RED", "2 SPEAKERS")
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD ORANGE", "Camille", "Infra PW and DX subjects", "", total_duration)
+count_down_screen(minitel, "SQUAD RED", "Greg A", "Customize Recipients", "", total_duration)
+input("speaker press enter")
+count_down_screen(minitel, "SQUAD RED", "Josselin", "Custom Alerts Flow", "", total_duration)
 
 input("speaker press enter")
 splash_demo(minitel, "TOUS EN RETRO !")
