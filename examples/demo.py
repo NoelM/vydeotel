@@ -25,7 +25,7 @@ def splash_squad(mntl: vy.Minitel, squad_name: str, speakers: str):
 
     mntl.text_mode()
     mntl.move_cursor_xy(5, 15)
-    mntl.set_attribute(vy.CARACTERE_NOIR)
+    mntl.set_attribute(vy.CARACTERE_BLANC)
     mntl.set_attribute(vy.FOND_NORMAL)
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
     mntl.println(squad_name.upper())
