@@ -54,6 +54,10 @@ class Form(Page):
         for i in self.inputs:
             i.draw()
 
+    def reset_inputs(self) -> None:
+        for i in self.inputs:
+            i.reset()
+
     def new_key(self, key: int) -> None:
         self.get_active_input().new_char(chr(key))
 

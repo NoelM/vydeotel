@@ -32,7 +32,7 @@ class Input:
     def get_buffer(self) -> str:
         return self.buffer
 
-    def correction(self):
+    def correction(self) -> None:
         if len(self.buffer) > 0:
             self.buffer = self.buffer[:-1]
             self.minitel.move_cursor_left(1)
@@ -40,9 +40,13 @@ class Input:
             self.minitel.print_char(".")
             self.minitel.move_cursor_left(1)
 
-    def annulation(self):
+    def annulation(self) -> None:
         self.minitel.move_cursor_xy(self.column, self.row)
         self.minitel.clear_line_from_cursor()
-        self.draw()
 
+        self.reset()
+        self.activate()
+
+    def reset(self) -> None:
         self.buffer = ""
+        self.draw()

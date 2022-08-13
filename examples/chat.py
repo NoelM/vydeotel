@@ -80,7 +80,7 @@ class LogWindow(Form):
         self.minitel.println("Pseudo ou MDP invalide")
 
         self.default_style()
-        self.activate_first_input()
+        self.reset_inputs()
 
     def new_key(self, key: int):
         self.get_active_input().new_char(chr(key))
