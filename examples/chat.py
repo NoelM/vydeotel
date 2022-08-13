@@ -65,8 +65,9 @@ class LogWindow(Form):
     def envoi(self) -> Optional[Page]:
         if not self.is_credentials_valid():
             self.reset()
-            self.draw()
             self.failed_login()
+            self.reset_inputs()
+            self.activate_first_input()
             return None
 
         return ChatWindow(
@@ -78,9 +79,7 @@ class LogWindow(Form):
         self.minitel.move_cursor_xy(1, 6)
         self.minitel.set_attribute(mn.INVERSION_FOND)
         self.minitel.println("Pseudo ou MDP invalide")
-
         self.default_style()
-        self.reset_inputs()
 
     def new_key(self, key: int):
         self.get_active_input().new_char(chr(key))
