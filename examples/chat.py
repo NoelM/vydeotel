@@ -94,7 +94,10 @@ class LogWindow(Form):
         self.get_active_input().new_char(chr(key))
 
     def reset(self):
-        self.credentials = []
+        self.credentials = {
+            "username": "",
+            "password": ""
+        }
         self.buffer = ""
 
     def get_username(self):
