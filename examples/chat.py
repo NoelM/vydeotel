@@ -9,6 +9,9 @@ from page import Page
 from typing import Optional
 from minitel import Minitel
 
+USERNAME = "username"
+PASSWORD = "password"
+
 
 class LogWindow(Form):
     def __init__(self, mntl: Minitel):
@@ -20,14 +23,14 @@ class LogWindow(Form):
             height=mntl.rows,
             inputs=[
                 Input(
-                    key="username",
+                    key=USERNAME,
                     minitel=mntl,
                     column=15,
                     row=4,
                     length=10,
                 ),
                 Input(
-                    key="password",
+                    key=PASSWORD,
                     minitel=mntl,
                     column=15,
                     row=5,
@@ -83,13 +86,13 @@ class LogWindow(Form):
         self.buffer = ""
 
     def get_username(self):
-        if len(self.credentials) == 0:
+        if USERNAME not in self.credentials:
             return ""
 
-        return self.credentials[0]
+        return self.credentials[USERNAME]
 
     def is_credentials_valid(self):
-        return ("NONO", "TRANSPAC") == self.credentials
+        return {USERNAME: "NONO", PASSWORD: "TRANPAC"} == self.credentials
 
 
 class ChatWindow(Page):
