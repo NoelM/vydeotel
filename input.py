@@ -14,17 +14,21 @@ class Input:
 
         self.buffer = ""
 
-    def draw(self):
+    @property
+    def value(self) -> str:
+        return self.buffer
+
+    def draw(self) -> None:
         self.minitel.move_cursor_xy(self.column, self.row)
 
         for i in range(self.length):
             self.minitel.print_char(".")
 
-    def activate(self):
+    def activate(self) -> None:
         self.minitel.move_cursor_xy(self.column + min(len(self.buffer), self.length-1), self.row)
         self.minitel.cursor()
 
-    def new_char(self, char: chr):
+    def new_char(self, char: chr) -> None:
         if len(self.buffer) < self.length - 1:
             self.buffer += char
         else:
@@ -32,9 +36,6 @@ class Input:
             self.minitel.move_cursor_left(1)
             self.minitel.print_char(self.buffer[-1])
             self.minitel.move_cursor_left(1)
-
-    def get_buffer(self) -> str:
-        return self.buffer
 
     def correction(self) -> None:
         if len(self.buffer) > 0:

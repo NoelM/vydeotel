@@ -2,7 +2,7 @@ from page import Page
 from consts import *
 from minitel import Minitel
 from input import Input
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 
 class Form(Page):
@@ -30,26 +30,33 @@ class Form(Page):
             return None
         return self.inputs[self.active_input]
 
+    def is_first_input_active(self) -> bool:
+        return self.active_input == 0
+
+    def is_last_input_active(self) -> bool:
+        return self.active_input == len(self.inputs) - 1
+
     def activate_first_input(self) -> None:
         if len(self.inputs) > 0:
             self.active_input = 0
             self.get_active_input().activate()
 
     def activate_next_input(self) -> None:
-        if self.active_input < len(self.inputs) - 1:
+        if not self.is_last_input_active():
             self.active_input += 1
             self.get_active_input().activate()
 
     def activate_prev_input(self) -> None:
-        if self.active_input > 0:
+        if not self.is_first_input_active():
             self.active_input -= 1
             self.get_active_input().activate()
 
-    def is_first_input_active(self) -> bool:
-        return self.active_input == 0
+    def get_form(self) -> Dict[str, str]:
+        form = {}
+        for i in self.inputs:
+            form[i.key] = i.value
 
-    def is_last_input_active(self) -> bool:
-        return self.active_input == len(self.inputs) - 1
+        return form
 
     def draw(self) -> None:
         super().draw()

@@ -36,10 +36,7 @@ class LogWindow(Form):
             ],
         )
 
-        self.credentials = {
-            "username": "",
-            "password": ""
-        }
+        self.credentials = {}
 
     def draw(self) -> None:
         super().draw()
@@ -59,8 +56,7 @@ class LogWindow(Form):
         self.activate_first_input()
 
     def envoi(self) -> Optional[Page]:
-        for i in self.inputs:
-            self.credentials[i.key] = i.get_buffer()
+        self.credentials = self.get_form()
 
         if not self.is_credentials_valid():
             self.reset()
@@ -84,10 +80,6 @@ class LogWindow(Form):
         self.get_active_input().new_char(chr(key))
 
     def reset(self):
-        self.credentials = {
-            "username": "",
-            "password": ""
-        }
         self.buffer = ""
 
     def get_username(self):
