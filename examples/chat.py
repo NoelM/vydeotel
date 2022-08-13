@@ -56,21 +56,9 @@ class LogWindow(Form):
 
         self.activate_first_input()
 
-    def save_credentials(self, credential: str):
-        if self.is_first_input_active():  # username
-            self.credentials["username"] = credential
-        elif self.is_last_input_active():  # password
-            self.credentials["password"] = credential
-
-    def suite(self) -> None:
-        credential = self.get_active_input().get_buffer()
-        self.save_credentials(credential)
-
-        self.activate_next_input()
-
     def envoi(self) -> Optional[Page]:
-        credential = self.get_active_input().get_buffer()
-        self.save_credentials(credential)
+        for i in self.inputs:
+            self.credentials[i.key] = i.get_buffer()
 
         if not self.is_credentials_valid():
             self.reset()

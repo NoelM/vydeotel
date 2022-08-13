@@ -3,7 +3,9 @@ from utils import between_bounds
 
 
 class Input:
-    def __init__(self, minitel: Minitel, column: int, row: int, length: int):
+    def __init__(self, key: str, minitel: Minitel, column: int, row: int, length: int):
+        self.key = key
+
         self.minitel = minitel
 
         self.column = between_bounds(column, 1, minitel.columns)
