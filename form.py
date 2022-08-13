@@ -46,7 +46,7 @@ class Form(Page):
             self.get_active_input().activate()
 
     def draw(self) -> None:
-        super(self).draw()
+        super().draw()
 
         if len(self.inputs) == 0:
             return
