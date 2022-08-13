@@ -55,12 +55,10 @@ class LogWindow(Form):
 
         if len(self.credentials) == 0:  # username
             self.credentials.append(credential)
-            self.activate_next_input()
-
         else:  # password
             self.credentials.append(credential)
 
-        return None
+        self.activate_next_input()
 
     def envoi(self) -> Optional[Page]:
         if not self.is_credentials_valid():
