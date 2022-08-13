@@ -21,14 +21,14 @@ class LogWindow(Form):
             inputs=[
                 Input(
                     minitel=mntl,
-                    column=10,
-                    row=3,
+                    column=15,
+                    row=4,
                     length=10,
                 ),
                 Input(
                     minitel=mntl,
-                    column=10,
-                    row=4,
+                    column=15,
+                    row=5,
                     length=10,
                 ),
             ],

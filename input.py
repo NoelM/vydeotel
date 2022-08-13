@@ -10,15 +10,7 @@ class Input:
         self.row = between_bounds(row, 1, minitel.rows)
         self.length = between_bounds(length, 1, minitel.columns - self.column)
 
-        self.cursor = True
-
         self.buffer = ""
-
-    def cursor_on(self):
-        self.cursor = True
-
-    def cursor_off(self):
-        self.cursor = False
 
     def draw(self):
         self.minitel.move_cursor_xy(self.column, self.row)
@@ -28,11 +20,7 @@ class Input:
 
     def activate(self):
         self.minitel.move_cursor_xy(self.column, self.row)
-
-        if self.cursor:
-            self.minitel.cursor()
-        else:
-            self.minitel.no_cursor()
+        self.minitel.cursor()
 
     def new_char(self, char: chr):
         if len(self.buffer) < self.length - 1:
