@@ -78,7 +78,9 @@ class LogWindow(Form):
         self.minitel.move_cursor_xy(1, 6)
         self.minitel.set_attribute(mn.INVERSION_FOND)
         self.minitel.println("Pseudo ou MDP invalide")
+
         self.default_style()
+        self.activate_first_input()
 
     def new_key(self, key: int):
         self.get_active_input().new_char(chr(key))

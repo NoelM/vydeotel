@@ -19,7 +19,7 @@ class Input:
             self.minitel.print_char(".")
 
     def activate(self):
-        self.minitel.move_cursor_xy(self.column + len(self.buffer), self.row)
+        self.minitel.move_cursor_xy(self.column + min(len(self.buffer), self.length-1), self.row)
         self.minitel.cursor()
 
     def new_char(self, char: chr):
