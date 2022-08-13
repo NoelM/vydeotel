@@ -20,12 +20,14 @@ class LogWindow(Form):
             height=mntl.rows,
             inputs=[
                 Input(
+                    key="username",
                     minitel=mntl,
                     column=15,
                     row=4,
                     length=10,
                 ),
                 Input(
+                    key="password",
                     minitel=mntl,
                     column=15,
                     row=5,
