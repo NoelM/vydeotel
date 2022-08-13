@@ -45,6 +45,12 @@ class Form(Page):
             self.active_input -= 1
             self.get_active_input().activate()
 
+    def is_first_input_active(self) -> bool:
+        return self.active_input == 0
+
+    def is_last_input_active(self) -> bool:
+        return self.active_input == len(self.inputs) - 1
+
     def draw(self) -> None:
         super().draw()
 

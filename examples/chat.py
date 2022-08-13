@@ -55,14 +55,17 @@ class LogWindow(Form):
     def suite(self) -> None:
         credential = self.get_active_input().get_buffer()
 
-        if len(self.credentials) == 0:  # username
+        if self.is_first_input_active():  # username
             self.credentials.append(credential)
-        else:  # password
+        elif self.is_last_input_active():  # password
             self.credentials.append(credential)
 
         self.activate_next_input()
 
     def envoi(self) -> Optional[Page]:
+        if self.is_last_input_active() and len(self.credentials) == 1:
+            self.credentials.append(self.get_active_input().get_buffer())
+
         if not self.is_credentials_valid():
             self.reset()
             self.failed_login()

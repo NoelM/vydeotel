@@ -28,6 +28,8 @@ class Input:
         else:
             self.minitel.clear_line_from_cursor()
             self.minitel.move_cursor_left(1)
+            self.minitel.print_char(self.buffer[-1])
+            self.minitel.move_cursor_left(1)
 
     def get_buffer(self) -> str:
         return self.buffer
