@@ -42,11 +42,11 @@ class LogWindow(Form):
 
         self.minitel.set_attribute(mn.INVERSION_FOND)
         self.minitel.set_attribute(mn.DOUBLE_GRANDEUR)
-
-        self.minitel.move_cursor_down(1)
         self.minitel.println("MESSAGERIE")
 
         self.default_style()
+        self.minitel.move_cursor_down(1)
+
         self.minitel.println("PSEUDO")
         self.minitel.println("MOT DE PASSE")
 
