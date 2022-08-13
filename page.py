@@ -40,6 +40,9 @@ class Page:
         self.minitel.set_attribute(self.fg)
         self.minitel.set_attribute(self.bg)
 
+    def default_pos(self) -> None:
+        self.minitel.move_cursor_xy(self.column, self.row)
+
     def draw(self) -> None:
         self.minitel.clean_screen()
         self.minitel.move_cursor_xy(self.column, self.row)

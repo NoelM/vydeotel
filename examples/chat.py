@@ -37,6 +37,7 @@ class LogWindow(Form):
 
     def draw(self) -> None:
         super().draw()
+        self.default_pos()
         self.minitel.set_attribute(mn.INVERSION_FOND)
         self.minitel.set_attribute(mn.DOUBLE_GRANDEUR)
         self.minitel.println("MESSAGERIE")
