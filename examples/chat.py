@@ -42,6 +42,8 @@ class LogWindow(Form):
 
         self.minitel.set_attribute(mn.INVERSION_FOND)
         self.minitel.set_attribute(mn.DOUBLE_GRANDEUR)
+
+        self.minitel.move_cursor_down(1)
         self.minitel.println("MESSAGERIE")
 
         self.default_style()
@@ -73,8 +75,8 @@ class LogWindow(Form):
         )
 
     def failed_login(self):
-        self.minitel.move_cursor_xy(1, 5)
-        self.minitel.set_attribute(mn.DOUBLE_LARGEUR)
+        self.minitel.move_cursor_xy(1, 6)
+        self.minitel.set_attribute(mn.INVERSION_FOND)
         self.minitel.println("Pseudo ou MDP invalide")
         self.default_style()
 
