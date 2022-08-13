@@ -38,6 +38,8 @@ class LogWindow(Form):
     def draw(self) -> None:
         super().draw()
         self.default_pos()
+        self.minitel.move_cursor_down(1)
+
         self.minitel.set_attribute(mn.INVERSION_FOND)
         self.minitel.set_attribute(mn.DOUBLE_GRANDEUR)
         self.minitel.println("MESSAGERIE")
@@ -45,6 +47,8 @@ class LogWindow(Form):
         self.default_style()
         self.minitel.println("PSEUDO")
         self.minitel.println("MOT DE PASSE")
+
+        self.activate_first_input()
 
     def suite(self) -> None:
         credential = self.get_active_input().get_buffer()
