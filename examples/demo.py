@@ -2,7 +2,7 @@ import random
 import sys
 import time
 
-sys.path.append('../')
+sys.path.append("../")
 import minitel as vy
 from utils import display_vdt
 
@@ -18,6 +18,7 @@ def splash_demo(mntl: vy.Minitel, sprint: str):
     mntl.set_attribute(vy.FOND_NORMAL)
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
     mntl.println(sprint.upper())
+
 
 def splash_squad(mntl: vy.Minitel, squad_name: str, speakers: str):
     mntl.clean_screen()
@@ -36,7 +37,9 @@ def splash_squad(mntl: vy.Minitel, squad_name: str, speakers: str):
     mntl.println(speakers.upper())
 
 
-def count_down_screen(mntl: vy.Minitel, squad: str, speaker: str, line1: str, line2: str, duration: int):
+def count_down_screen(
+    mntl: vy.Minitel, squad: str, speaker: str, line1: str, line2: str, duration: int
+):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
     mntl.move_cursor_xy(5, 2)
@@ -91,12 +94,26 @@ splash_demo(minitel, "SPRINT 22.16")
 input("squad enter")
 splash_squad(minitel, "GREEN", "1 SPEAKER")
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD GREEN", "NABIL", "Visualization Card in Scenario ", "& KW Groups", total_duration)
+count_down_screen(
+    minitel,
+    "SQUAD GREEN",
+    "NABIL",
+    "Visualization Card in Scenario ",
+    "& KW Groups",
+    total_duration,
+)
 
 input("squad enter")
 splash_squad(minitel, "PINK", "2 SPEAKERS")
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD PINK", "AUREL & AYMEN", "Airbyte MVP", "Connections from the Django Admin", 2*total_duration)
+count_down_screen(
+    minitel,
+    "SQUAD PINK",
+    "AUREL & AYMEN",
+    "Airbyte MVP",
+    "Connections from the Django Admin",
+    2 * total_duration,
+)
 
 input("speaker press enter")
 splash_squad(minitel, "BLUE", "3 SPEAKERS")
@@ -110,21 +127,36 @@ count_down_screen(minitel, "SQUAD BLUE", "STEPHANE", "Localization", "", total_d
 input("speaker press enter")
 splash_squad(minitel, "DATA ANALYTICS", "1 SPEAKER")
 input("speaker press enter")
-count_down_screen(minitel, "DATA ANALYTICS", "LEA", "KPIs for Data Quality", "", total_duration)
+count_down_screen(
+    minitel, "DATA ANALYTICS", "LEA", "KPIs for Data Quality", "", total_duration
+)
 
 input("speaker press enter")
 splash_squad(minitel, "ORANGE", "2 SPEAKERS")
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD ORANGE", "Sevket", "Template Preview", "New module selection modal", total_duration)
+count_down_screen(
+    minitel,
+    "SQUAD ORANGE",
+    "Sevket",
+    "Template Preview",
+    "New module selection modal",
+    total_duration,
+)
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD ORANGE", "Younes", "PW Impact", "CWV investigation", total_duration)
+count_down_screen(
+    minitel, "SQUAD ORANGE", "Younes", "PW Impact", "CWV investigation", total_duration
+)
 
 input("speaker press enter")
 splash_squad(minitel, "RED", "2 SPEAKERS")
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD RED", "Greg A", "Customize Recipients", "", total_duration)
+count_down_screen(
+    minitel, "SQUAD RED", "Greg A", "Customize Recipients", "", total_duration
+)
 input("speaker press enter")
-count_down_screen(minitel, "SQUAD RED", "Josselin", "Custom Alerts Flow", "", total_duration)
+count_down_screen(
+    minitel, "SQUAD RED", "Josselin", "Custom Alerts Flow", "", total_duration
+)
 
 input("speaker press enter")
 splash_demo(minitel, "TOUS EN RETRO !")

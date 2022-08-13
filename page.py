@@ -1,5 +1,5 @@
+from __future__ import annotations
 from consts import *
-from input import Input
 from minitel import Minitel
 from utils import between_bounds
 from typing import Optional
@@ -7,15 +7,16 @@ from typing import Optional
 
 class Page:
     def __init__(
-            self,
-            minitel: Minitel,
-            column: int,
-            row: int,
-            width: int,
-            height: int,
-            fg=CARACTERE_BLANC,
-            bg=FOND_NORMAL,
-            typo=GRANDEUR_NORMALE) -> None:
+        self,
+        minitel: Minitel,
+        column: int,
+        row: int,
+        width: int,
+        height: int,
+        fg=CARACTERE_BLANC,
+        bg=FOND_NORMAL,
+        typo=GRANDEUR_NORMALE,
+    ) -> None:
 
         self.minitel = minitel
 
@@ -47,26 +48,26 @@ class Page:
     def new_key(self, key: int) -> None:
         self.buffer += chr(key)
 
-    def envoi(self):
+    def envoi(self) -> Optional[Page]:
         pass
 
-    def annulation(self):
+    def annulation(self) -> Optional[Page]:
         pass
 
-    def correction(self):
+    def correction(self) -> Optional[Page]:
         pass
 
-    def repetition(self):
+    def repetition(self) -> Optional[Page]:
         pass
 
-    def sommaire(self):
+    def sommaire(self) -> Optional[Page]:
         pass
 
-    def retour(self):
+    def retour(self) -> Optional[Page]:
         pass
 
-    def guide(self):
+    def guide(self) -> Optional[Page]:
         pass
 
-    def suite(self):
+    def suite(self) -> Optional[Page]:
         pass

@@ -1,56 +1,82 @@
 import sys
-sys.path.append('../')
-import minitel as vy
-import string
-import random
-import time
-import feedparser
+
+sys.path.append("../")
+import minitel as mn
+import server as srv
+from input import Input
+from form import Form
+from page import Page
+from typing import Optional
+from minitel import Minitel
 
 
-class LogWindow(vy.Window):
-    def __init__(self):
-        super().__init__(0, 0, 40, 40)
+class LogWindow(Form):
+    def __init__(self, mntl: Minitel):
+        super().__init__(
+            minitel=mntl,
+            column=1,
+            row=1,
+            width=mntl.columns,
+            height=mntl.rows,
+            inputs=[
+                Input(
+                    minitel=mntl,
+                    column=10,
+                    row=3,
+                    length=10,
+                ),
+                Input(
+                    minitel=mntl,
+                    column=10,
+                    row=4,
+                    length=10,
+                ),
+            ],
+        )
         self.credentials = []
 
-    def draw(self):
+    def draw(self) -> None:
         super().draw()
-        self.m.println("")
-        self.m.set_attribute(vy.INVERSION_FOND)
-        self.m.set_attribute(vy.DOUBLE_GRANDEUR)
-        self.m.println("MESSAGERIE")
+        self.minitel.set_attribute(mn.INVERSION_FOND)
+        self.minitel.set_attribute(mn.DOUBLE_GRANDEUR)
+        self.minitel.println("MESSAGERIE")
 
         self.default_style()
-        self.m.println("PSEUDO       .............")
-        self.m.println("MOT DE PASSE .............")
+        self.minitel.println("PSEUDO")
+        self.minitel.println("MOT DE PASSE")
 
-        self.m.move_cursor_xy(14, 3)
-        self.m.cursor()
+    def suite(self) -> None:
+        credential = self.get_active_input().get_buffer()
 
-    def envoi(self) -> vy.Window:
         if len(self.credentials) == 0:  # username
-            self.credentials.append(self.buffer)
-            self.buffer = ""
+            self.credentials.append(credential)
+            self.activate_next_input()
 
-            self.m.move_cursor_xy(14, 4)
-            self.m.cursor()
+        else:  # password
+            self.credentials.append(credential)
+
+        return None
+
+    def envoi(self) -> Optional[Page]:
+        if not self.is_credentials_valid():
+            self.reset()
+            self.draw()
+            self.failed_login()
             return None
 
-        else:
-            self.credentials.append(self.buffer)
-            if not self.is_credentials_valid():
-                self.reset()
-                self.draw()
-                return None
+        return ChatWindow(
+            mntl=self.minitel,
+            username=self.get_username(),
+        )
 
-            username = self.get_username()
-            self.reset()
+    def failed_login(self):
+        self.minitel.move_cursor_xy(1, 5)
+        self.minitel.set_attribute(mn.DOUBLE_LARGEUR)
+        self.minitel.println("Pseudo ou MDP invalide")
+        self.default_style()
 
-            w = ChatWindow(username)
-            w.set_prev_window(self)
-            return w
-
-    def guide(self):
-        return Surprise()
+    def new_key(self, key: int):
+        self.get_active_input().new_char(chr(key))
 
     def reset(self):
         self.credentials = []
@@ -63,48 +89,29 @@ class LogWindow(vy.Window):
         return self.credentials[0]
 
     def is_credentials_valid(self):
-        return True
+        return ("NONO", "TRANSPAC") == self.credentials
 
 
-class ChatWindow(vy.Window):
-    def __init__(self, username: str):
-        super().__init__(0, 0, 40, 40)
+class ChatWindow(Page):
+    def __init__(self, mntl: Minitel, username: str):
+        super().__init__(
+            minitel=mntl,
+            column=1,
+            row=1,
+            width=mntl.columns,
+            height=mntl.rows,
+        )
+
         self.username = username
 
     def draw(self):
         super().draw()
-        self.m.println(f"Salut {self.username}, petit coquin va!")
-
-
-class Surprise(vy.Window):
-    def __init__(self):
-        super().__init__(0, 0, 40, 40)
-
-    def draw(self):
-        super().draw()
-        self.m.set_attribute(vy.ESC)
-        self.m.set_attribute(0x39)
-        self.m.set_attribute(vy.START)
-        self.m.set_attribute(vy.ROULEAU)
-        
-        lemonde = feedparser.parse("https://www.lemonde.fr/rss/en_continu.xml")
-
-        for entry in lemonde.entries:
-            self.m.clean_screen()
-            self.m.move_cursor_xy(0, 1)
-            self.m.set_attribute(vy.DOUBLE_HAUTEUR)
-            self.m.println(entry.title)
-            self.m.set_attribute(vy.GRANDEUR_NORMALE)
-            self.m.println(entry.published)
-            self.m.println("")
-            self.m.println(entry.description)
-            time.sleep(2)
+        self.minitel.println(f"Salut {self.username}, petit coquin va!")
 
 
 if __name__ == "__main__":
-    window = LogWindow()
+    minitel = mn.Minitel("/dev/ttyS0")
+    login_window = LogWindow(minitel)
 
-    minitel = vy.Minitel("/dev/ttyS0")
-    minitel.set_window(window)
-    minitel.start()
-
+    server = srv.Server(minitel, login_window)
+    server.start()

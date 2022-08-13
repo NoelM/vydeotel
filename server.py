@@ -3,35 +3,37 @@ from minitel import *
 
 
 class Server:
-    def __init__(self, connector: Minitel, window: Form):
-        self.connector = connector
-        self.window = window
+    def __init__(self, minitel: Minitel, page: Page):
+        self.minitel = minitel
+        self.page = page
 
     def start(self):
-        new_window = None
-        self.window.draw()
-        while True:
-            if new_window is not None:
-                self.window = new_window
-                new_window = None
-                self.window.draw(self.connector)
+        self.page.draw()
+        new_page = None
 
-            key = self.connector.get_key_code()
+        while True:
+            if new_page is not None:
+                self.page = new_page
+                self.page.draw()
+
+                new_page = None
+
+            key = self.minitel.get_key_code()
             if key == ENVOI:
-                new_window = self.window.envoi(self.connector)
+                new_page = self.page.envoi()
             elif key == ANNULATION:
-                new_window = self.window.annulation(self.connector)
+                new_page = self.page.annulation()
             elif key == REPETITION:
-                new_window = self.window.repetition(self.connector)
+                new_page = self.page.repetition()
             elif key == CORRECTION:
-                new_window = self.window.correction(self.connector)
+                new_page = self.page.correction()
             elif key == SOMMAIRE:
-                new_window = self.window.sommaire(self.connector)
+                new_page = self.page.sommaire()
             elif key == RETOUR:
-                new_window = self.window.retour(self.connector)
+                new_page = self.page.retour()
             elif key == GUIDE:
-                new_window = self.window.guide(self.connector)
+                new_page = self.page.guide()
             elif key == SUITE:
-                new_window = self.window.suite(self.connector)
+                new_page = self.page.suite()
             else:
-                self.window.new_key(key)
+                self.page.new_key(key)

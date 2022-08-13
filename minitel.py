@@ -52,7 +52,7 @@ class Minitel:
                 byte = byte ^ (1 << 7)
             return byte
         else:
-            return 0xff
+            return 0xFF
 
     def write_bytes_pro(self, n):
         self.write_byte(ESC)
@@ -202,14 +202,15 @@ class Minitel:
 
     def graphic(self, byte):
         if byte <= 0b111111:
-            byte = (0x20 +
-                    bit_read(byte, 5) +
-                    bit_read(byte, 4) * 2 +
-                    bit_read(byte, 3) * 4 +
-                    bit_read(byte, 2) * 8 +
-                    bit_read(byte, 1) * 16 +
-                    bit_read(byte, 0) * 64
-                    )
+            byte = (
+                0x20
+                + bit_read(byte, 5)
+                + bit_read(byte, 4) * 2
+                + bit_read(byte, 3) * 4
+                + bit_read(byte, 2) * 8
+                + bit_read(byte, 1) * 16
+                + bit_read(byte, 0) * 64
+            )
             if byte == 0x7F:
                 byte = 0x5F
 
@@ -233,7 +234,7 @@ class Minitel:
         elif pos == BOTTOM:
             self.write_byte(0x5F)
 
-        self.repeat(x2-x1)
+        self.repeat(x2 - x1)
 
     def v_line(self, x, y1, y2, pos, direction):
         self.text_mode()
@@ -242,7 +243,7 @@ class Minitel:
         elif direction == UP:
             self.move_cursor_xy(x, y2)
 
-        for i in range(y2-y1):
+        for i in range(y2 - y1):
             if pos == LEFT:
                 self.write_byte(0x7B)
             elif pos == CENTER:

@@ -39,7 +39,7 @@ def display_vdt(minitel, filename):
 
 
 def between_bounds(value: int, min_bound: int, max_bound: int) -> int:
-    """ Return the value between the bounds included
+    """Return the value between the bounds included
         e.g. between_bounds(-1, 0, 10) -> 0
         and  between_bounds(11, 0, 10) -> 10
 

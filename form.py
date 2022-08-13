@@ -7,16 +7,17 @@ from typing import Optional, List
 
 class Form(Page):
     def __init__(
-            self,
-            minitel: Minitel,
-            column: int,
-            row: int,
-            width: int,
-            height: int,
-            inputs: List[Input],
-            fg=CARACTERE_BLANC,
-            bg=FOND_NORMAL,
-            typo=GRANDEUR_NORMALE) -> None:
+        self,
+        minitel: Minitel,
+        column: int,
+        row: int,
+        width: int,
+        height: int,
+        inputs: List[Input],
+        fg=CARACTERE_BLANC,
+        bg=FOND_NORMAL,
+        typo=GRANDEUR_NORMALE,
+    ) -> None:
 
         super().__init__(minitel, column, row, width, height, fg, bg, typo)
 
@@ -24,37 +25,36 @@ class Form(Page):
         self.inputs = inputs
         self.active_input = -1
 
-    def new_input(self, i: Input) -> None:
-        self.inputs.append(i)
-
     def get_active_input(self) -> Optional[Input]:
         if len(self.inputs) == 0 or self.active_input < 0:
             return None
         return self.inputs[self.active_input]
 
-    def setup_inputs(self) -> None:
+    def activate_first_input(self) -> None:
         if len(self.inputs) > 0:
             self.active_input = 0
-            self.get_active_input().active()
+            self.get_active_input().activate()
 
-    def active_next_input(self) -> None:
-        if self.active_input < len(self.inputs):
+    def activate_next_input(self) -> None:
+        if self.active_input < len(self.inputs) - 1:
             self.active_input += 1
-            self.get_active_input().active()
+            self.get_active_input().activate()
 
-    def active_prev_input(self) -> None:
+    def activate_prev_input(self) -> None:
         if self.active_input > 0:
             self.active_input -= 1
-            self.get_active_input().active()
+            self.get_active_input().activate()
 
-    def draw_inputs(self) -> None:
+    def draw(self) -> None:
+        super(self).draw()
+
         if len(self.inputs) == 0:
             return
 
         for i in self.inputs:
             i.draw()
 
-        self.setup_inputs()
+        self.activate_first_input()
 
     def new_key(self, key: int) -> None:
         self.get_active_input().new_char(chr(key))
@@ -64,3 +64,9 @@ class Form(Page):
 
     def correction(self) -> None:
         self.get_active_input().correction()
+
+    def suite(self) -> None:
+        self.activate_next_input()
+
+    def retour(self) -> None:
+        self.activate_prev_input()
