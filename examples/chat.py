@@ -1,20 +1,22 @@
 import sys
+import socket
 
 sys.path.append("../")
-import minitel as mn
-import server as srv
+from tcp_connector import TCPConnector
+import videotext as mn
+import session as srv
 from input import Input
 from form import Form
 from page import Page
 from typing import Optional
-from minitel import Minitel
+from videotext import VideoText
 
 USERNAME = "username"
 PASSWORD = "password"
 
 
 class LogWindow(Form):
-    def __init__(self, mntl: Minitel):
+    def __init__(self, mntl: VideoText):
         super().__init__(
             minitel=mntl,
             column=1,
@@ -92,11 +94,11 @@ class LogWindow(Form):
         return self.credentials[USERNAME]
 
     def is_credentials_valid(self):
-        return {USERNAME: "NONO", PASSWORD: "TRANPAC"} == self.credentials
+        return {USERNAME: "NONO", PASSWORD: "NONO"} == self.credentials
 
 
 class ChatWindow(Page):
-    def __init__(self, mntl: Minitel, username: str):
+    def __init__(self, mntl: VideoText, username: str):
         super().__init__(
             minitel=mntl,
             column=1,
@@ -112,9 +114,18 @@ class ChatWindow(Page):
         self.minitel.println(f"Salut {self.username}, petit coquin va!")
 
 
-if __name__ == "__main__":
-    minitel = mn.Minitel("/dev/ttyS0")
-    login_window = LogWindow(minitel)
+ADDRESS = ""
+PORT = 3615
 
-    server = srv.Server(minitel, login_window)
-    server.start()
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind((ADDRESS, PORT))
+server.listen(1)
+client, adresseClient = server.accept()
+print("Connection from:", adresseClient)
+
+connector = TCPConnector(client)
+minitel = mn.VideoText(connector)
+login_window = LogWindow(minitel)
+
+server = srv.Session(minitel, login_window)
+server.start()

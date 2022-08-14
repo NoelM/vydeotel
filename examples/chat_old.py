@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append("../")
-import minitel as vy
+import videotext as vy
 import string
 import random
 import time
@@ -105,6 +105,6 @@ class Surprise(vy.Window):
 if __name__ == "__main__":
     window = LogWindow()
 
-    minitel = vy.Minitel("/dev/ttyS0")
+    minitel = vy.VideoText("/dev/ttyS0")
     minitel.set_window(window)
     minitel.start()

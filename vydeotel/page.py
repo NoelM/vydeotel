@@ -1,6 +1,6 @@
 from __future__ import annotations
 from consts import *
-from minitel import Minitel
+from videotext import VideoText
 from utils import between_bounds
 from typing import Optional
 
@@ -8,7 +8,7 @@ from typing import Optional
 class Page:
     def __init__(
         self,
-        minitel: Minitel,
+        minitel: VideoText,
         column: int,
         row: int,
         width: int,

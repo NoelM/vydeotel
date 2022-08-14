@@ -1,11 +1,22 @@
-from form import *
-from minitel import *
+import imp
+from connector import Connector
+from application import Application
+from consts import (
+    ENVOI,
+    ANNULATION,
+    REPETITION,
+    CORRECTION,
+    SOMMAIRE,
+    RETOUR,
+    GUIDE,
+    SUITE,
+)
+from videotext import VideoText
 
 
-class Server:
-    def __init__(self, minitel: Minitel, page: Page):
-        self.minitel = minitel
-        self.page = page
+class Session:
+    def __init__(self, connector: Connector, app: Application):
+        self.videotxt = VideoText(connector)
 
     def start(self):
         self.page.draw()
@@ -18,7 +29,7 @@ class Server:
 
                 new_page = None
 
-            key = self.minitel.get_key_code()
+            key = self.videotxt.get_key_code()
             if key == ENVOI:
                 new_page = self.page.envoi()
             elif key == ANNULATION:
@@ -35,5 +46,5 @@ class Server:
                 new_page = self.page.guide()
             elif key == SUITE:
                 new_page = self.page.suite()
-            else:
+            elif key is not None:
                 self.page.new_key(key)

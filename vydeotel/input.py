@@ -1,9 +1,11 @@
-from minitel import Minitel
+from videotext import VideoText
 from utils import between_bounds
 
 
 class Input:
-    def __init__(self, key: str, minitel: Minitel, column: int, row: int, length: int):
+    def __init__(
+        self, key: str, minitel: VideoText, column: int, row: int, length: int
+    ):
         self.key = key
 
         self.minitel = minitel
@@ -25,7 +27,9 @@ class Input:
             self.minitel.print_char(".")
 
     def activate(self) -> None:
-        self.minitel.move_cursor_xy(self.column + min(len(self.buffer), self.length-1), self.row)
+        self.minitel.move_cursor_xy(
+            self.column + min(len(self.buffer), self.length - 1), self.row
+        )
         self.minitel.cursor()
 
     def new_char(self, char: chr) -> None:

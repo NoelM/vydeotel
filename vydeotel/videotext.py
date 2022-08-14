@@ -1,14 +1,14 @@
 import time
-import serial
 from struct import pack
 
 from utils import *
 from consts import *
+from connector import Connector
 
 
-class Minitel:
-    def __init__(self, port, write_parity=True, read_parity=True):
-        self.serial = serial.Serial(port, 1200, timeout=1000)
+class VideoText:
+    def __init__(self, conn: Connector, write_parity=True, read_parity=True):
+        self.conn = conn
         self.current_size = GRANDEUR_NORMALE
 
         self.write_parity = write_parity
@@ -29,15 +29,14 @@ class Minitel:
             else:
                 byte = bit_write(byte, 7, 0)
 
-        self.serial.write(pack("B", byte))
+        self.conn.write(pack("B", byte))
 
     def write_word(self, word):
         self.write_byte(high_byte(word))
         self.write_byte(low_byte(word))
 
     def read_byte(self):
-        byte = self.serial.read(1)
-        byte = byte[0]  # keep only the first byte
+        byte = self.conn.read()
 
         if not self.read_parity:
             return byte
@@ -76,16 +75,16 @@ class Minitel:
 
         if bauds == 300:
             self.write_byte(0b1010010)
-            self.serial.baudrate = 300
+            self.conn.baudrate = 300
         elif bauds == 1200:
             self.write_byte(0b1100100)
-            self.serial.baudrate = 1200
+            self.conn.baudrate = 1200
         elif bauds == 4800:
             self.write_byte(0b1110110)
-            self.serial.baudrate = 4800
+            self.conn.baudrate = 4800
         elif bauds == 9600:
             self.write_byte(0b1111111)
-            self.serial.baudrate = 9600
+            self.conn.baudrate = 9600
 
         # TODO: respect the C implem
         return bauds
@@ -273,12 +272,12 @@ class Minitel:
         return self.working_mode()
 
     def working_mode(self):
-        while not self.serial.readable():
+        while not self.conn.readable():
             continue
 
         trame = 0
         while trame >> 8 != 0x1B3A73:  # PRO2, REP_STATUS_FCT
-            if self.serial.readable():
+            if self.conn.readable():
                 trame = (trame << 8) + self.read_byte()
 
         return trame
@@ -301,7 +300,7 @@ class Minitel:
         self.write_byte(ESC)
         self.write_byte(0x61)
 
-        while not self.serial.readable():
+        while not self.conn.readable():
             continue
 
         trame = 0
@@ -313,11 +312,11 @@ class Minitel:
     def get_key_code(self):
         code = 0
 
-        if self.serial.readable():
+        if self.conn.readable():
             code = self.read_byte()
 
         if code == 0x19:
-            while not self.serial.readable():
+            while not self.conn.readable():
                 continue
             code = (code << 8) + self.read_byte()
             if code == 0x1923:
@@ -333,19 +332,19 @@ class Minitel:
             elif code == 0x197B:
                 code = 0xDF
         elif code == 0x13:
-            while not self.serial.readable():
+            while not self.conn.readable():
                 continue
             code = (code << 8) + self.read_byte()
         elif code == 0x1B:
             time.sleep(0.02)
-            if self.serial.readable():
+            if self.conn.readable():
                 code = (code << 8) + self.read_byte()
                 if code == 0x1B5B:
-                    while not self.serial.readable():
+                    while not self.conn.readable():
                         continue
                     code = (code << 8) + self.read_byte()
                     if code == 0x1B5B34 or code == 0x1B5B32:
-                        while not self.serial.readable():
+                        while not self.conn.readable():
                             continue
                         code = (code << 8) + self.read_byte()
 

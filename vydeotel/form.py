@@ -1,6 +1,6 @@
 from page import Page
 from consts import *
-from minitel import Minitel
+from videotext import VideoText
 from input import Input
 from typing import Optional, List, Dict
 
@@ -8,7 +8,7 @@ from typing import Optional, List, Dict
 class Form(Page):
     def __init__(
         self,
-        minitel: Minitel,
+        minitel: VideoText,
         column: int,
         row: int,
         width: int,
