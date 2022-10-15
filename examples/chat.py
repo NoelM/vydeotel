@@ -1,39 +1,36 @@
 import sys
+sys.path.append("../vydeotel/")
 import socket
 
-sys.path.append("../")
-from tcp_connector import TCPConnector
-import videotext as mn
-import session as srv
-from input import Input
-from form import Form
-from page import Page
+from vydeotel.application import Application
+from vydeotel.connector import TCPConnector
+from vydeotel.input import Input
+from vydeotel.form import Form
+from vydeotel.page import Page
+from vydeotel.consts import INVERSION_FOND, DOUBLE_GRANDEUR, COLONNES, LIGNES
+
 from typing import Optional
-from videotext import VideoText
 
 USERNAME = "username"
 PASSWORD = "password"
 
 
 class LogWindow(Form):
-    def __init__(self, mntl: VideoText):
+    def __init__(self):
         super().__init__(
-            minitel=mntl,
             column=1,
             row=1,
-            width=mntl.columns,
-            height=mntl.rows,
+            width=COLONNES,
+            height=LIGNES,
             inputs=[
                 Input(
                     key=USERNAME,
-                    minitel=mntl,
                     column=15,
                     row=4,
                     length=10,
                 ),
                 Input(
                     key=PASSWORD,
-                    minitel=mntl,
                     column=15,
                     row=5,
                     length=10,
@@ -48,8 +45,8 @@ class LogWindow(Form):
         self.default_pos()
         self.minitel.move_cursor_down(1)
 
-        self.minitel.set_attribute(mn.INVERSION_FOND)
-        self.minitel.set_attribute(mn.DOUBLE_GRANDEUR)
+        self.minitel.set_attribute(INVERSION_FOND)
+        self.minitel.set_attribute(DOUBLE_GRANDEUR)
         self.minitel.println("MESSAGERIE")
 
         self.default_style()
@@ -57,6 +54,11 @@ class LogWindow(Form):
 
         self.minitel.println("PSEUDO")
         self.minitel.println("MOT DE PASSE")
+
+        self.minitel.move_cursor_down(3)
+        self.minitel.println("Saisissez votre Pseudo et Mot de Passe")
+        self.minitel.println("en navigant avec SUITE et RETOUR")
+        self.minitel.println("Tappez sur ENVOI lorsque tout est rempli")
 
         self.activate_first_input()
 
@@ -71,13 +73,12 @@ class LogWindow(Form):
             return None
 
         return ChatWindow(
-            mntl=self.minitel,
             username=self.get_username(),
         )
 
     def failed_login(self):
         self.minitel.move_cursor_xy(1, 6)
-        self.minitel.set_attribute(mn.INVERSION_FOND)
+        self.minitel.set_attribute(INVERSION_FOND)
         self.minitel.println("Pseudo ou MDP invalide")
         self.default_style()
 
@@ -98,13 +99,12 @@ class LogWindow(Form):
 
 
 class ChatWindow(Page):
-    def __init__(self, mntl: VideoText, username: str):
+    def __init__(self, username: str):
         super().__init__(
-            minitel=mntl,
             column=1,
             row=1,
-            width=mntl.columns,
-            height=mntl.rows,
+            width=COLONNES,
+            height=LIGNES,
         )
 
         self.username = username
@@ -123,9 +123,8 @@ server.listen(1)
 client, adresseClient = server.accept()
 print("Connection from:", adresseClient)
 
+login_window = LogWindow()
+chat_app = Application(login_window)
 connector = TCPConnector(client)
-minitel = mn.VideoText(connector)
-login_window = LogWindow(minitel)
 
-server = srv.Session(minitel, login_window)
-server.start()
+chat_app.new_session(connector)

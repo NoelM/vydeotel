@@ -1,9 +1,9 @@
 import time
 from struct import pack
 
-from utils import *
-from consts import *
-from connector import Connector
+from vydeotel.utils import *
+from vydeotel.consts import *
+from vydeotel.connector import Connector
 
 
 class VideoText:
@@ -14,8 +14,8 @@ class VideoText:
         self.write_parity = write_parity
         self.read_parity = read_parity
 
-        self.columns = 40
-        self.rows = 25
+        self.columns = COLONNES
+        self.rows = LIGNES
 
     def write_byte(self, byte: int):
         if self.write_parity:
