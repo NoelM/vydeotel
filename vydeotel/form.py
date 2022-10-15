@@ -1,14 +1,13 @@
-from page import Page
-from consts import *
-from minitel import Minitel
-from input import Input
+from vydeotel.page import Page
+from vydeotel.consts import *
+from vydeotel.videotext import VideoText
+from vydeotel.input import Input
 from typing import Optional, List, Dict
 
 
 class Form(Page):
     def __init__(
         self,
-        minitel: Minitel,
         column: int,
         row: int,
         width: int,
@@ -19,11 +18,16 @@ class Form(Page):
         typo=GRANDEUR_NORMALE,
     ) -> None:
 
-        super().__init__(minitel, column, row, width, height, fg, bg, typo)
+        super().__init__(column, row, width, height, fg, bg, typo)
 
         # Input data
         self.inputs = inputs
         self.active_input = -1
+
+    def set_minitel(self, vdt: VideoText):
+        super().set_minitel(vdt)
+        for i in self.inputs:
+            i.set_minitel(vdt)
 
     def get_active_input(self) -> Optional[Input]:
         if len(self.inputs) == 0 or self.active_input < 0:

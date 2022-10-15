@@ -3,11 +3,11 @@ import sys
 import time
 
 sys.path.append("../")
-import minitel as vy
+import videotext as vy
 from utils import display_vdt
 
 
-def splash_demo(mntl: vy.Minitel, sprint: str):
+def splash_demo(mntl: vy.VideoText, sprint: str):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
     display_vdt(mntl, "3615demo.vdt")
@@ -20,7 +20,7 @@ def splash_demo(mntl: vy.Minitel, sprint: str):
     mntl.println(sprint.upper())
 
 
-def splash_squad(mntl: vy.Minitel, squad_name: str, speakers: str):
+def splash_squad(mntl: vy.VideoText, squad_name: str, speakers: str):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
     display_vdt(mntl, "squad.vdt")
@@ -38,7 +38,7 @@ def splash_squad(mntl: vy.Minitel, squad_name: str, speakers: str):
 
 
 def count_down_screen(
-    mntl: vy.Minitel, squad: str, speaker: str, line1: str, line2: str, duration: int
+    mntl: vy.VideoText, squad: str, speaker: str, line1: str, line2: str, duration: int
 ):
     mntl.clean_screen()
     mntl.set_attribute(vy.FIXE)
@@ -63,7 +63,7 @@ def count_down_screen(
     count_down(mntl, duration)
 
 
-def count_down(mntl: vy.Minitel, duration: int):
+def count_down(mntl: vy.VideoText, duration: int):
     mntl.set_attribute(vy.DOUBLE_GRANDEUR)
     for remaining in reversed(range(duration)):
         try:
@@ -87,7 +87,7 @@ def count_down(mntl: vy.Minitel, duration: int):
             break
 
 
-minitel = vy.Minitel("/dev/ttyS0")
+minitel = vy.VideoText("/dev/ttyS0")
 total_duration = 150
 
 splash_demo(minitel, "SPRINT 22.16")

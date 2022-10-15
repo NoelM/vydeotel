@@ -1,5 +1,8 @@
 # Le standard Télétel
 
+COLONNES = 40
+LIGNES   = 25
+
 # 1 Mode Vidéotex
 
 # 1.2.3 Codage des caractères visualisables
