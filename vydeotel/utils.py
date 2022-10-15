@@ -1,3 +1,6 @@
+from struct import pack
+
+
 def bit_read(byte, pos):
     if byte > 255 or pos > 7:
         raise Exception
@@ -14,6 +17,20 @@ def bit_write(byte, pos, val):
         return byte & ~(1 << pos)
     else:
         return byte | (1 << pos)
+
+
+def write_byte(byte: int):
+    even = False
+    for i in range(7):
+        if bit_read(byte, i) == 1:
+            even = not even
+
+    if even:
+        byte = bit_write(byte, 7, 1)
+    else:
+        byte = bit_write(byte, 7, 0)
+
+    return pack("B", byte)
 
 
 def low_byte(word):

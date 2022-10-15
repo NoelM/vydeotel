@@ -11,12 +11,12 @@ from vydeotel.consts import (
     GUIDE,
     SUITE,
 )
-from vydeotel.videotext import VideoText
+from vydeotel.teleltel import Teletel
 
 
 class Session:
     def __init__(self, connector: Connector, landing: Page):
-        self.videotxt = VideoText(connector)
+        self.connector = connector
 
         self.landing = landing
         self.current_page = landing
@@ -31,7 +31,7 @@ class Session:
     def _loop(self):
         self._new_page(self.landing)
         while True:
-            key = self.videotxt.get_key_code()
+            key = self.connector.get_key_code()
             if key == ENVOI:
                 self.envoi()
             elif key == ANNULATION:
@@ -53,52 +53,69 @@ class Session:
 
     def _draw(self):
         self.current_page.draw()
+        self.connector.write(self.current_page.flush())
 
     def _new_page(self, page: Page):
         self.previous_page = self.current_page
         self.current_page = page
-        self.current_page.set_minitel(self.videotxt)
         self._draw()
 
     def new_key(self, key):
         self.current_page.new_key(key)
+        self.connector.write(self.current_page.flush())
 
     def envoi(self):
         p = self.current_page.envoi()
         if p is not None:
             self._new_page(p)
+        else:
+            self.connector.write(self.current_page.flush())
 
     def annulation(self):
         p = self.current_page.annulation()
         if p is not None:
             self._new_page(p)
+        else:
+            self.connector.write(self.current_page.flush())
 
     def correction(self):
         p = self.current_page.correction()
         if p is not None:
             self._new_page(p)
+        else:
+            self.connector.write(self.current_page.flush())
 
     def repetition(self):
         p = self.current_page.repetition()
         if p is not None:
             self._new_page(p)
+        else:
+            self.connector.write(self.current_page.flush())
 
     def sommaire(self):
         p = self.current_page.sommaire()
         if p is not None:
             self._new_page(p)
+        else:
+            self.connector.write(self.current_page.flush())
 
     def retour(self):
         p = self.current_page.retour()
         if p is not None:
             self._new_page(p)
+        else:
+            self.connector.write(self.current_page.flush())
 
     def guide(self):
         p = self.current_page.guide()
         if p is not None:
             self._new_page(p)
+        else:
+            self.connector.write(self.current_page.flush())
 
     def suite(self):
         p = self.current_page.suite()
         if p is not None:
             self._new_page(p)
+        else:
+            self.connector.write(self.current_page.flush())

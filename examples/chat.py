@@ -43,22 +43,22 @@ class LogWindow(Form):
     def draw(self) -> None:
         super().draw()
         self.default_pos()
-        self.minitel.move_cursor_down(1)
+        self.teletel.move_cursor_down(1)
 
-        self.minitel.set_attribute(INVERSION_FOND)
-        self.minitel.set_attribute(DOUBLE_GRANDEUR)
-        self.minitel.println("MESSAGERIE")
+        self.teletel.set_attribute(INVERSION_FOND)
+        self.teletel.set_attribute(DOUBLE_GRANDEUR)
+        self.teletel.println("MESSAGERIE")
 
         self.default_style()
-        self.minitel.move_cursor_down(1)
+        self.teletel.move_cursor_down(1)
 
-        self.minitel.println("PSEUDO")
-        self.minitel.println("MOT DE PASSE")
+        self.teletel.println("PSEUDO")
+        self.teletel.println("MOT DE PASSE")
 
-        self.minitel.move_cursor_down(3)
-        self.minitel.println("Saisissez votre Pseudo et Mot de Passe")
-        self.minitel.println("en navigant avec SUITE et RETOUR")
-        self.minitel.println("Tappez sur ENVOI lorsque tout est rempli")
+        self.teletel.move_cursor_down(3)
+        self.teletel.println("Saisissez votre Pseudo et Mot de Passe")
+        self.teletel.println("en navigant avec SUITE et RETOUR")
+        self.teletel.println("Tappez sur ENVOI lorsque tout est rempli")
 
         self.activate_first_input()
 
@@ -77,9 +77,9 @@ class LogWindow(Form):
         )
 
     def failed_login(self):
-        self.minitel.move_cursor_xy(1, 6)
-        self.minitel.set_attribute(INVERSION_FOND)
-        self.minitel.println("Pseudo ou MDP invalide")
+        self.teletel.move_cursor_xy(1, 6)
+        self.teletel.set_attribute(INVERSION_FOND)
+        self.teletel.println("Pseudo ou MDP invalide")
         self.default_style()
 
     def new_key(self, key: int):
@@ -111,7 +111,7 @@ class ChatWindow(Page):
 
     def draw(self):
         super().draw()
-        self.minitel.println(f"Salut {self.username}, petit coquin va!")
+        self.teletel.println(f"Salut {self.username}, petit coquin va!")
 
 
 ADDRESS = ""

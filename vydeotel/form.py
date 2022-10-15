@@ -1,6 +1,5 @@
 from vydeotel.page import Page
 from vydeotel.consts import *
-from vydeotel.videotext import VideoText
 from vydeotel.input import Input
 from typing import Optional, List, Dict
 
@@ -24,10 +23,12 @@ class Form(Page):
         self.inputs = inputs
         self.active_input = -1
 
-    def set_minitel(self, vdt: VideoText):
-        super().set_minitel(vdt)
+    def flush(self) -> bytes:
+        buf = self.teletel.flush()
         for i in self.inputs:
-            i.set_minitel(vdt)
+            buf += i.flush()
+
+        return buf
 
     def get_active_input(self) -> Optional[Input]:
         if len(self.inputs) == 0 or self.active_input < 0:
@@ -75,17 +76,17 @@ class Form(Page):
         for i in self.inputs:
             i.reset()
 
-    def new_key(self, key: int) -> None:
-        self.get_active_input().new_char(chr(key))
+    def new_key(self, key: int) -> bytes:
+        return self.get_active_input().new_char(chr(key))
 
-    def annulation(self) -> None:
-        self.get_active_input().annulation()
+    def annulation(self) -> bytes:
+        return self.get_active_input().annulation()
 
-    def correction(self) -> None:
-        self.get_active_input().correction()
+    def correction(self) -> bytes:
+        return self.get_active_input().correction()
 
-    def suite(self) -> None:
-        self.activate_next_input()
+    def suite(self) -> bytes:
+        return self.activate_next_input()
 
-    def retour(self) -> None:
-        self.activate_prev_input()
+    def retour(self) -> bytes:
+        return self.activate_prev_input()

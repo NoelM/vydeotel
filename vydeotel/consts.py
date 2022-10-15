@@ -1,7 +1,7 @@
 # Le standard Télétel
 
 COLONNES = 40
-LIGNES   = 25
+LIGNES = 25
 
 # 1 Mode Vidéotex
 

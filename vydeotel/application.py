@@ -6,7 +6,7 @@ from vydeotel.session import Session
 class Application:
     def __init__(self, landing: Page):
         self.landing = landing
-        self.sessions = []        
+        self.sessions = []
 
     def new_session(self, conn: Connector):
         s = Session(conn, self.landing)

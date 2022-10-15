@@ -1,6 +1,6 @@
 from __future__ import annotations
 from vydeotel.consts import *
-from vydeotel.videotext import VideoText
+from vydeotel.teleltel import Teletel
 from vydeotel.utils import between_bounds
 from typing import Optional
 
@@ -17,11 +17,11 @@ class Page:
         typo=GRANDEUR_NORMALE,
     ) -> None:
 
-        self.minitel = None
+        self.teletel = Teletel()
 
         # Position
-        self.column = column 
-        self.row = row
+        self.column = between_bounds(column, 1, COLONNES)
+        self.row = between_bounds(row, 1, LIGNES)
 
         # Size
         self.width = width
@@ -34,22 +34,17 @@ class Page:
 
         self.buffer = ""
 
-    def set_minitel(self, vdt: VideoText):
-        self.minitel = vdt
-        self.column = between_bounds(self.column, 1, self.minitel.columns)
-        self.row = between_bounds(self.row, 1, self.minitel.rows)
-
     def default_style(self) -> None:
-        self.minitel.set_attribute(self.typo)
-        self.minitel.set_attribute(self.fg)
-        self.minitel.set_attribute(self.bg)
+        self.teletel.set_attribute(self.typo)
+        self.teletel.set_attribute(self.fg)
+        self.teletel.set_attribute(self.bg)
 
     def default_pos(self) -> None:
-        self.minitel.move_cursor_xy(self.column, self.row)
+        self.teletel.move_cursor_xy(self.column, self.row)
 
     def draw(self) -> None:
-        self.minitel.clean_screen()
-        self.minitel.move_cursor_xy(self.column, self.row)
+        self.teletel.clean_screen()
+        self.teletel.move_cursor_xy(self.column, self.row)
         self.default_style()
 
     def new_key(self, key: int) -> None:
