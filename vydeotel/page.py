@@ -1,6 +1,6 @@
 from __future__ import annotations
 from vydeotel.consts import *
-from vydeotel.videotext import VideoText
+from vydeotel.minitel import Minitel
 from vydeotel.utils import between_bounds
 from typing import Optional
 
@@ -8,19 +8,19 @@ from typing import Optional
 class Page:
     def __init__(
         self,
-        column: int,
-        row: int,
-        width: int,
-        height: int,
-        fg=CARACTERE_BLANC,
-        bg=FOND_NORMAL,
-        typo=GRANDEUR_NORMALE,
+        column: int = 1,
+        row: int = 1,
+        width: int = COLONNES,
+        height: int = LIGNES,
+        fg: int = CARACTERE_BLANC,
+        bg: int = FOND_NORMAL,
+        typo: int = GRANDEUR_NORMALE,
     ) -> None:
 
         self.minitel = None
 
         # Position
-        self.column = column 
+        self.column = column
         self.row = row
 
         # Size
@@ -34,8 +34,8 @@ class Page:
 
         self.buffer = ""
 
-    def set_minitel(self, vdt: VideoText):
-        self.minitel = vdt
+    def setup(self, minitel: Minitel):
+        self.minitel = minitel
         self.column = between_bounds(self.column, 1, self.minitel.columns)
         self.row = between_bounds(self.row, 1, self.minitel.rows)
 

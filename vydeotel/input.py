@@ -1,11 +1,9 @@
-from vydeotel.videotext import VideoText
+from vydeotel.minitel import Minitel
 from vydeotel.utils import between_bounds
 
 
 class Input:
-    def __init__(
-        self, key: str, column: int, row: int, length: int
-    ):
+    def __init__(self, key: str, column: int, row: int, length: int):
         self.key = key
 
         self.mintel = None
@@ -16,8 +14,8 @@ class Input:
 
         self.buffer = ""
 
-    def set_minitel(self, vdt: VideoText):
-        self.minitel = vdt
+    def setup(self, minitel: Minitel):
+        self.minitel = minitel
 
         self.column = between_bounds(self.column, 1, self.minitel.columns)
         self.row = between_bounds(self.row, 1, self.minitel.rows)
