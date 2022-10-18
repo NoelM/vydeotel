@@ -19,7 +19,7 @@ class Session(socketserver.BaseRequestHandler):
         self.connector = TCPConnector(self.request)
         self.minitel = Minitel(self.connector)
 
-        self.landing = self.server.landing
+        self.landing = self.server.landing()
         self.current_page = None
         self.previous_page = None
 
