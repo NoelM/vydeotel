@@ -1,6 +1,10 @@
 import sys
 import hashlib
 import dbm
+from datetime import datetime
+from threading import Lock
+import copy
+from collections import deque
 
 sys.path.append("../vydeotel/")
 from vydeotel.server import Server
@@ -10,13 +14,42 @@ from vydeotel.form import Form
 from vydeotel.page import Page
 from vydeotel.consts import INVERSION_FOND, DOUBLE_GRANDEUR
 
-from typing import Optional
+from typing import Optional, List
 
 USERNAME = "username"
 PASSWORD = "password"
 PASSWORD_VALID = "password_valid"
 
 users = dbm.open("users.db", 'c')
+
+class Message():
+    def __init__(self, pseudo: str, message: str) -> None:
+        self.time = datetime.now()
+        self.pseudo = pseudo
+        self.message = message
+
+
+class Messages():
+    def __init__(self) -> None:
+        self.lock = Lock()
+        self.messages = deque(maxlen=100)
+        self.id = 0
+    
+    def new_message(self, message: Message) -> None:
+        with self.lock:
+            self.messages.append(copy.deepcopy(message))
+            self.id += 1
+
+    def get_message_since(self, id: int) -> List[Message]:
+        with self.lock:
+            last_message_pos = len(self.messages) - 1
+            return copy.deepcopy(self.messages[last_message_pos - (self.id-id) : last_message_pos])
+
+    def get_last_n_messages(self, n: int) -> List[Message]:
+        with self.lock:
+            last_message_pos = len(self.messages) - 1
+            return copy.deepcopy(self.messages[last_message_pos - n : last_message_pos])
+
 
 class LogWindow(Form):
     def __init__(self):
