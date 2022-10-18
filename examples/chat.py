@@ -1,9 +1,8 @@
 import sys
-
-sys.path.append("../vydeotel/")
 import hashlib
 import dbm
 
+sys.path.append("../vydeotel/")
 from vydeotel.server import Server
 from vydeotel.session import Session
 from vydeotel.input import Input
@@ -17,8 +16,7 @@ USERNAME = "username"
 PASSWORD = "password"
 PASSWORD_VALID = "password_valid"
 
-users = dbm.open("users.db", "c")
-
+users = dbm.open("users.db", 'c')
 
 class LogWindow(Form):
     def __init__(self):
@@ -110,6 +108,9 @@ class LogWindow(Form):
             self.credentials[USERNAME] in users
             and users[self.credentials[USERNAME]] == h.digest()
         )
+
+    def repetition(self) -> Optional[Page]:
+        self.draw()
 
 
 class SignInWindow(Form):
@@ -207,5 +208,5 @@ class ChatWindow(Page):
 ADDRESS = ""
 PORT = 3615
 
-minitel_tcp_server = Server((ADDRESS, PORT), Session)
+minitel_tcp_server = Server((ADDRESS, PORT), Session, landing=LogWindow)
 minitel_tcp_server.serve_forever()
