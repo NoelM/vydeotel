@@ -1,12 +1,19 @@
-package minigo
+package main
 
 import "strings"
 
 // Le standard Télétel
 
 const (
-	Colonnes = 40
-	Lignes   = 25
+	ResolutionSimple = iota
+	ResolutionDouble
+)
+
+const (
+	ColonnesSimple = 40
+	LignesSimple   = 25
+	ColonnesDouble = 2 * ColonnesSimple
+	LignesDouble   = 2 * LignesSimple
 )
 
 // 1 Mode Vidéotex
@@ -114,11 +121,11 @@ const Csi = 0x1B5B
 
 // 1.2.5 Fonctions de mise en page (voir p.94)
 const (
-	Bu = 0x08 // BackSpace : Déplacement du curseur d'un emplacement de caractère à gauche.
-	Hu = 0x09 // Horizontal Tab : Déplacement du curseur d'un emplacement de caractère à droite.
-	Lu = 0x0A // Line Feed : Déplacement du curseur d'un emplacement de caractère vers le bas.
-	Vu = 0x0B // Vertical Tab : Déplacement du curseur d'un emplacement de caractère vers le haut.
-	Cu = 0x0D // Carriage Return : Retour du curseur au début de la rangée courante.
+	Bs = 0x08 // BackSpace : Déplacement du curseur d'un emplacement de caractère à gauche.
+	Ht = 0x09 // Horizontal Tab : Déplacement du curseur d'un emplacement de caractère à droite.
+	Lf = 0x0A // Line Feed : Déplacement du curseur d'un emplacement de caractère vers le bas.
+	Vt = 0x0B // Vertical Tab : Déplacement du curseur d'un emplacement de caractère vers le haut.
+	Cr = 0x0D // Carriage Return : Retour du curseur au début de la rangée courante.
 )
 
 // Les fonctions de type CSI sont développées à l'intérieur de la classe Minitel (plus bas).
@@ -250,11 +257,18 @@ const (
 	Down   = 6
 )
 
+// A ranger
+const (
+	Pro1 = 0x39
+	Pro2 = 0x3A
+	Pro3 = 0x3B
+)
+
 // Correspondance ASCII / Videotex
 const CHAR_TABLE = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx !\"//$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_xabcdefghijklmnopqrstuvwxyz"
 
-func GetRuneByte(c byte) int {
-	return strings.LastIndexByte(CHAR_TABLE, c)
+func GetVideotextCharByte(c byte) byte {
+	return byte(strings.LastIndexByte(CHAR_TABLE, c))
 }
 
 func IsValidChar(c byte) bool {

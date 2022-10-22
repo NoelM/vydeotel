@@ -25,6 +25,7 @@ class Minitel:
         else:
             byte = bit_write(byte, 7, 0)
 
+        print(byte)
         self.connector.write(pack("B", byte))
 
     def write_word(self, word):
