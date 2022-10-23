@@ -14,11 +14,6 @@ var addr = flag.String("addr", "localhost:8080", "http service address")
 var upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }} // use default options
 
 func server(w http.ResponseWriter, r *http.Request) {
-	m := Minitel{
-		resolution: ResolutionSimple,
-		fontSize:   GrandeurNormale,
-	}
-
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
@@ -27,7 +22,7 @@ func server(w http.ResponseWriter, r *http.Request) {
 	defer c.Close()
 
 	for {
-		msg := m.GetMessage("BONJOUR! ")
+		msg, _ := GetMessage("BONJOUR! ")
 		log.Println("sent: ", msg)
 		err = c.WriteMessage(websocket.TextMessage, []byte{27,
 			219,

@@ -8,7 +8,7 @@ import (
 const ByteParityPos = 7
 
 func BitReadAt(b byte, i int) bool {
-	return b&(1<<i) == 1
+	return b&byte(1<<i) > 0
 }
 
 func GetByteLow(w int) byte {
@@ -20,7 +20,7 @@ func GetByteHigh(w int) byte {
 }
 
 func IsByteEven(b byte) bool {
-	even := false
+	even := true
 	for i := 0; i < ByteParityPos; i++ {
 		if BitReadAt(b, i) {
 			even = !even
@@ -31,18 +31,22 @@ func IsByteEven(b byte) bool {
 
 func BitWriteAt(b byte, i int, value bool) byte {
 	if value {
-		return b | 1<<i
+		return b | byte(1<<i)
 	} else {
-		return b &^ 1 << i
+		return b &^ byte(1<<i)
 	}
 }
 
 func GetByteWithParity(b byte) byte {
-	return BitWriteAt(b, ByteParityPos, IsByteEven(b))
+	// The parity bit is set to 0 if the sum of other bits is even,
+	// thus if the sum is odd the parity bit is set to 1
+	return BitWriteAt(b, ByteParityPos, !IsByteEven(b))
 }
 
 func CheckByteParity(b byte) (byte, error) {
-	if IsByteEven(b) && BitReadAt(b, ByteParityPos) {
+	// The parity bit is set to 0 if the sum of other bits is even,
+	// thus if the sum is odd the parity bit is set to 1
+	if IsByteEven(b) && !BitReadAt(b, ByteParityPos) {
 		return BitWriteAt(b, ByteParityPos, false), nil
 	} else {
 		return 0, errors.New("invalid parity received")
