@@ -205,18 +205,19 @@ func GetMessage(buf []byte, msg string) ([]byte, error) {
 }
 
 type Minitel struct {
-	fontSize   byte
-	resolution uint
-	buffer     []byte
-	driver     Driver
+	fontSize    byte
+	resolution  uint
+	driver      Driver
+	writeBuffer []byte
+	readBuffer  []byte
 }
 
 func (m *Minitel) clearBuffer() {
-	m.buffer = []byte{}
+	m.writeBuffer = []byte{}
 }
 
 func (m *Minitel) sendBuffer() error {
-	return m.driver.Send(m.buffer)
+	return m.driver.Send(m.writeBuffer)
 }
 
 func (m *Minitel) sendAndClearBuffer() error {
@@ -244,69 +245,145 @@ func (m *Minitel) MoveCursorXY(x, y int) error {
 		return fmt.Errorf("unable to move cursor: values (x=%d,y=%d) out of bound", x, y)
 	}
 
-	m.buffer = GetMoveCursorXY(m.buffer, x, y)
+	m.writeBuffer = GetMoveCursorXY(m.writeBuffer, x, y)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) MoveCursorLeft(n int) error {
-	m.buffer = GetMoveCursorLeft(m.buffer, n)
+	m.writeBuffer = GetMoveCursorLeft(m.writeBuffer, n)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) MoveCursorRight(n int) error {
-	m.buffer = GetMoveCursorRight(m.buffer, n)
+	m.writeBuffer = GetMoveCursorRight(m.writeBuffer, n)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) MoveCursorDown(n int) error {
-	m.buffer = GetMoveCursorDown(m.buffer, n)
+	m.writeBuffer = GetMoveCursorDown(m.writeBuffer, n)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) MoveCursorUp(n int) error {
-	m.buffer = GetMoveCursorUp(m.buffer, n)
+	m.writeBuffer = GetMoveCursorUp(m.writeBuffer, n)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) MoveCursorReturn(n int) error {
-	m.buffer = GetMoveCursorReturn(m.buffer, n)
+	m.writeBuffer = GetMoveCursorReturn(m.writeBuffer, n)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanScreen() error {
-	m.buffer = GetCleanScreen(m.buffer)
+	m.writeBuffer = GetCleanScreen(m.writeBuffer)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanScreenFromCursor() error {
-	m.buffer = GetCleanScreenFromCursor(m.buffer)
+	m.writeBuffer = GetCleanScreenFromCursor(m.writeBuffer)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanScreenToCursor() error {
-	m.buffer = GetCleanScreenToCursor(m.buffer)
+	m.writeBuffer = GetCleanScreenToCursor(m.writeBuffer)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanLine() error {
-	m.buffer = GetCleanLine(m.buffer)
+	m.writeBuffer = GetCleanLine(m.writeBuffer)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanLineFromCursor() error {
-	m.buffer = GetCleanLineFromCursor(m.buffer)
+	m.writeBuffer = GetCleanLineFromCursor(m.writeBuffer)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanLineToCursor() error {
-	m.buffer = GetCleanLineToCursor(m.buffer)
+	m.writeBuffer = GetCleanLineToCursor(m.writeBuffer)
 	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) PrintMessage(msg string) error {
 	var err error
-	if m.buffer, err = GetMessage(m.buffer, msg); err != nil {
+	if m.writeBuffer, err = GetMessage(m.writeBuffer, msg); err != nil {
 		return fmt.Errorf("unable to send message: %w", err)
 	}
 	return m.sendAndClearBuffer()
+}
+
+func (m *Minitel) RecvByte( (byte, error) {
+	b, err := m.driver.Recv()
+	if err != nil {
+		return 0, err
+	}
+
+	b, err = CheckByteParity(b)
+	if err != nil {
+		return 0, err
+	}
+
+	return b, nil
+}
+
+func (m *Minitel) RecvKey() ([]byte, error) {
+
+	b, err := m.RecvByte()
+	if err != nil {
+		return nil, err
+	}
+	m.readBuffer = []byte{b}
+
+	if m.readBuffer[0] == 0x19 {
+		b, err = m.RecvByte()
+		if err != nil {
+			return nil, err
+		}
+		m.readBuffer = append(m.readBuffer, b)
+
+		switch m.readBuffer[1] {
+		case 0x23:
+			m.readBuffer = []byte{0xA3}
+		case 0x27:
+			m.readBuffer = []byte{0xA7}
+		case 0x30:
+			m.readBuffer = []byte{0xB0}
+		case 0x31:
+			m.readBuffer = []byte{0xB1}
+		case 0x38:
+			m.readBuffer = []byte{0xF7}
+		case 0x7B:
+			m.readBuffer = []byte{0xDF}
+		}
+	} else if m.readBuffer[0] == 0x13 {
+		b, err = m.RecvByte()
+		if err != nil {
+			return nil, err
+		}
+		m.readBuffer = append(m.readBuffer, b)
+	} else if m.readBuffer[0] == 0x1B {
+		time.Sleep(20 * time.Millisecond)
+		b, err = m.RecvByte()
+		if err != nil {
+			return nil, err
+		}
+		m.readBuffer = append(m.readBuffer, b)
+
+		if m.readBuffer[1] == 0x5B {
+			b, err = m.RecvByte()
+			if err != nil {
+				return nil, err
+			}
+			m.readBuffer = append(m.readBuffer, b)
+
+			if m.readBuffer[2] == 0x34 || m.readBuffer[2] == 0x32 {
+				b, err = m.RecvByte()
+				if err != nil {
+					return nil, err
+				}
+				m.readBuffer = append(m.readBuffer, b)
+			}
+		}
+	}
+	return m.readBuffer, nil
 }
