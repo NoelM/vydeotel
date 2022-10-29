@@ -4,6 +4,8 @@ import "strings"
 
 // Le standard Télétel
 
+const MaxRetry = 3
+
 const (
 	ResolutionSimple = iota
 	ResolutionDouble

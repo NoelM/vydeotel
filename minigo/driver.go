@@ -5,3 +5,5 @@ type Driver interface {
 	Readable() (bool, error)
 	Send(msg []byte) error
 }
+
+type

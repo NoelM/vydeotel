@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"time"
 )
 
 const ByteParityPos = 7
@@ -53,29 +54,29 @@ func CheckByteParity(b byte) (byte, error) {
 	}
 }
 
-func GetProCode(pro byte) (buf []byte, err error) {
+func GetProCode(buf []byte, pro byte) ([]byte, error) {
 	if pro < Pro1 || pro > Pro3 {
 		return nil, errors.New("pro argument beyond bound [0x39;0x3B]")
 	}
 	buf = append(buf, GetByteWithParity(Esc))
 	buf = append(buf, GetByteWithParity(pro))
-	return
+	return buf, nil
 }
 
-func GetPCode(i int) (buf []byte) {
+func GetPCode(buf []byte, i int) []byte {
 	if i < 10 {
 		buf = append(buf, GetByteWithParity(0x30+byte(i)))
 	} else {
 		buf = append(buf, GetByteWithParity(0x30+byte(i/10)))
 		buf = append(buf, GetByteWithParity(0x30+byte(i%10)))
 	}
-	return
+	return buf
 }
 
-func GetWordWithParity(word int) (buf []byte) {
+func GetWordWithParity(buf []byte, word int) []byte {
 	buf = append(buf, GetByteWithParity(GetByteHigh(word)))
 	buf = append(buf, GetByteWithParity(GetByteLow(word)))
-	return
+	return buf
 }
 
 func IsPosInBounds(x, y int, resolution uint) (bool, error) {
@@ -89,99 +90,99 @@ func IsPosInBounds(x, y int, resolution uint) (bool, error) {
 	}
 }
 
-func GetMoveCursorXY(x, y int) (buf []byte) {
-	buf = append(buf, GetWordWithParity(Csi)...)
-	buf = append(buf, GetPCode(y)...)
+func GetMoveCursorXY(buf []byte, x, y int) []byte {
+	buf = GetWordWithParity(buf, Csi)
+	buf = GetPCode(buf, y)
 	buf = append(buf, GetByteWithParity(0x3B))
-	buf = append(buf, GetPCode(x)...)
+	buf = GetPCode(buf, x)
 	buf = append(buf, GetByteWithParity(0x48))
-	return
+	return buf
 }
 
-func GetMoveCursorLeft(n int) (buf []byte) {
+func GetMoveCursorLeft(buf []byte, n int) []byte {
 	if n == 1 {
-		return []byte{GetByteWithParity(Bs)}
+		return append(buf, GetByteWithParity(Bs))
 	} else {
-		buf = append(buf, GetWordWithParity(Csi)...)
-		buf = append(buf, GetPCode(n)...)
+		buf = GetWordWithParity(buf, Csi)
+		buf = GetPCode(buf, n)
 		buf = append(buf, GetByteWithParity(0x44))
 	}
-	return
+	return buf
 }
 
-func GetMoveCursorRight(n int) (buf []byte) {
+func GetMoveCursorRight(buf []byte, n int) []byte {
 	if n == 1 {
-		return []byte{GetByteWithParity(Ht)}
+		return append(buf, GetByteWithParity(Ht))
 	} else {
-		buf = append(buf, GetWordWithParity(Csi)...)
-		buf = append(buf, GetPCode(n)...)
+		buf = GetWordWithParity(buf, Csi)
+		buf = GetPCode(buf, n)
 		buf = append(buf, GetByteWithParity(0x43))
 	}
-	return
+	return buf
 }
 
-func GetMoveCursorDown(n int) (buf []byte) {
+func GetMoveCursorDown(buf []byte, n int) []byte {
 	if n == 1 {
-		return []byte{GetByteWithParity(Lf)}
+		return append(buf, GetByteWithParity(Lf))
 	} else {
-		buf = append(buf, GetWordWithParity(Csi)...)
-		buf = append(buf, GetPCode(n)...)
+		buf = GetWordWithParity(buf, Csi)
+		buf = GetPCode(buf, n)
 		buf = append(buf, GetByteWithParity(0x42))
 	}
-	return
+	return buf
 }
 
-func GetMoveCursorUp(n int) (buf []byte) {
+func GetMoveCursorUp(buf []byte, n int) []byte {
 	if n == 1 {
-		return []byte{GetByteWithParity(Vt)}
+		return append(buf, GetByteWithParity(Vt))
 	} else {
-		buf = append(buf, GetWordWithParity(Csi)...)
-		buf = append(buf, GetPCode(n)...)
+		buf = GetWordWithParity(buf, Csi)
+		buf = GetPCode(buf, n)
 		buf = append(buf, GetByteWithParity(0x41))
 	}
-	return
+	return buf
 }
 
-func GetMoveCursorReturn(n int) (buf []byte) {
+func GetMoveCursorReturn(buf []byte, n int) []byte {
 	buf = append(buf, GetByteWithParity(Cr))
-	buf = append(buf, GetMoveCursorDown(n)...)
-	return
+	buf = GetMoveCursorDown(buf, n)
+	return buf
 }
 
-func GetCleanScreen() (buf []byte) {
-	buf = append(buf, GetWordWithParity(Csi)...)
+func GetCleanScreen(buf []byte) []byte {
+	buf = GetWordWithParity(buf, Csi)
 	buf = append(buf, GetByteWithParity(0x32), GetByteWithParity(0x4A))
-	return
+	return buf
 }
 
-func GetCleanScreenFromCursor() (buf []byte) {
-	buf = append(buf, GetWordWithParity(Csi)...)
+func GetCleanScreenFromCursor(buf []byte) []byte {
+	buf = GetWordWithParity(buf, Csi)
 	buf = append(buf, GetByteWithParity(0x4A))
-	return
+	return buf
 }
 
-func GetCleanScreenToCursor() (buf []byte) {
-	buf = append(buf, GetWordWithParity(Csi)...)
+func GetCleanScreenToCursor(buf []byte) []byte {
+	buf = GetWordWithParity(buf, Csi)
 	buf = append(buf, GetByteWithParity(0x31), GetByteWithParity(0x4A))
-	return
+	return buf
 }
 
-func GetCleanLine() (buf []byte) {
-	buf = append(buf, GetWordWithParity(Csi)...)
+func GetCleanLine(buf []byte) []byte {
+	buf = GetWordWithParity(buf, Csi)
 	buf = append(buf, GetByteWithParity(0x32), GetByteWithParity(0x4B))
-	return
+	return buf
 }
 
-func GetCleanLineFromCursor() (buf []byte) {
-	buf = append(buf, GetWordWithParity(Csi)...)
+func GetCleanLineFromCursor(buf []byte) []byte {
+	buf = GetWordWithParity(buf, Csi)
 	buf = append(buf, GetByteWithParity(0x4B))
-	return
+	return buf
 }
 
-func GetCleanLineToCursor() (buf []byte) {
-	buf = append(buf, GetWordWithParity(Csi)...)
+func GetCleanLineToCursor(buf []byte) []byte {
+	buf = append(buf, GetWordWithParity(buf, Csi)...)
 	buf = append(buf, GetByteWithParity(0x31), GetByteWithParity(0x4B))
-	return
+	return buf
 }
 
 func GetChar(c int32) (byte, error) {
@@ -192,7 +193,7 @@ func GetChar(c int32) (byte, error) {
 	return 0, errors.New("invalid char byte")
 }
 
-func GetMessage(msg string) (buf []byte, err error) {
+func GetMessage(buf []byte, msg string) ([]byte, error) {
 	for _, c := range msg {
 		if b, err := GetChar(c); err == nil {
 			buf = append(buf, GetByteWithParity(b))
@@ -200,13 +201,38 @@ func GetMessage(msg string) (buf []byte, err error) {
 			return nil, fmt.Errorf("ignored char %d: %w", c, err)
 		}
 	}
-	return
+	return buf, nil
 }
 
 type Minitel struct {
 	fontSize   byte
 	resolution uint
+	buffer     []byte
 	driver     Driver
+}
+
+func (m *Minitel) clearBuffer() {
+	m.buffer = []byte{}
+}
+
+func (m *Minitel) sendBuffer() error {
+	return m.driver.Send(m.buffer)
+}
+
+func (m *Minitel) sendAndClearBuffer() error {
+	err := m.sendBuffer()
+
+	var retry int
+	for err != nil && retry < MaxRetry {
+		retry++
+		err = m.sendBuffer()
+		time.Sleep(10 * time.Millisecond)
+	}
+
+	if err == nil {
+		m.clearBuffer()
+	}
+	return err
 }
 
 func (m *Minitel) MoveCursorXY(x, y int) error {
@@ -218,67 +244,69 @@ func (m *Minitel) MoveCursorXY(x, y int) error {
 		return fmt.Errorf("unable to move cursor: values (x=%d,y=%d) out of bound", x, y)
 	}
 
-	return m.driver.Send(GetMoveCursorXY(x, y))
+	m.buffer = GetMoveCursorXY(m.buffer, x, y)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) MoveCursorLeft(n int) error {
-	return m.driver.Send(GetMoveCursorLeft(n))
+	m.buffer = GetMoveCursorLeft(m.buffer, n)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) MoveCursorRight(n int) error {
-	return m.driver.Send(GetMoveCursorRight(n))
+	m.buffer = GetMoveCursorRight(m.buffer, n)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) MoveCursorDown(n int) error {
-	return m.driver.Send(GetMoveCursorDown(n))
+	m.buffer = GetMoveCursorDown(m.buffer, n)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) MoveCursorUp(n int) error {
-	return m.driver.Send(GetMoveCursorUp(n))
+	m.buffer = GetMoveCursorUp(m.buffer, n)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) MoveCursorReturn(n int) error {
-	return m.driver.Send(GetMoveCursorReturn(n))
+	m.buffer = GetMoveCursorReturn(m.buffer, n)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanScreen() error {
-	return m.driver.Send(GetCleanScreen())
+	m.buffer = GetCleanScreen(m.buffer)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanScreenFromCursor() error {
-	return m.driver.Send(GetCleanLineFromCursor())
+	m.buffer = GetCleanScreenFromCursor(m.buffer)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanScreenToCursor() error {
-	return m.driver.Send(GetCleanScreenToCursor())
+	m.buffer = GetCleanScreenToCursor(m.buffer)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanLine() error {
-	return m.driver.Send(GetCleanLine())
+	m.buffer = GetCleanLine(m.buffer)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanLineFromCursor() error {
-	return m.driver.Send(GetCleanLineFromCursor())
+	m.buffer = GetCleanLineFromCursor(m.buffer)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) CleanLineToCursor() error {
-	return m.driver.Send(GetCleanLineToCursor())
-}
-
-func (m *Minitel) PrintChar(c int32) error {
-	var char byte
-	var err error
-	if char, err = GetChar(c); err != nil {
-		return fmt.Errorf("unable to send char: %w", err)
-	}
-	return m.driver.Send([]byte{char})
+	m.buffer = GetCleanLineToCursor(m.buffer)
+	return m.sendAndClearBuffer()
 }
 
 func (m *Minitel) PrintMessage(msg string) error {
-	var msgEncoded []byte
 	var err error
-	if msgEncoded, err = GetMessage(msg); err != nil {
+	if m.buffer, err = GetMessage(m.buffer, msg); err != nil {
 		return fmt.Errorf("unable to send message: %w", err)
 	}
-	return m.driver.Send(msgEncoded)
+	return m.sendAndClearBuffer()
 }
