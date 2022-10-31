@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 	"os"
-	"time"
 )
 
 /*
@@ -43,21 +42,21 @@ func main() {
 */
 
 const (
-	CONN_HOST = "localhost"
-	CONN_PORT = "3615"
-	CONN_TYPE = "tcp"
+	ConnHost = "192.168.1.10"
+	ConnPort = "3615"
+	ConnType = "tcp"
 )
 
 func main() {
 	// Listen for incoming connections.
-	l, err := net.Listen(CONN_TYPE, CONN_HOST+":"+CONN_PORT)
+	l, err := net.Listen(ConnType, ConnHost+":"+ConnPort)
 	if err != nil {
 		fmt.Println("Error listening:", err.Error())
 		os.Exit(1)
 	}
 	// Close the listener when the application closes.
 	defer l.Close()
-	fmt.Println("Listening on " + CONN_HOST + ":" + CONN_PORT)
+	fmt.Println("Listening on " + ConnHost + ":" + ConnPort)
 	for {
 		// Listen for an incoming connection.
 		conn, err := l.Accept()
@@ -72,17 +71,42 @@ func main() {
 
 // Handles incoming requests.
 func handleRequest(conn net.Conn) {
-	// Make a buffer to hold incoming data.
-	buf := make([]byte, 1024)
+	tcpd := NewTCPDriver(conn)
+	mntl := NewMinitel(tcpd)
+
+	var pid uint
+	var key uint
+	var err error
+
+	p := NewTestPage(mntl)
+	p.Draw()
 	for {
-		msg, _ := GetMessage(buf, "BONJOUR! ")
-		_, err := conn.Write(msg)
-		if err != nil {
-			log.Println("write:", err)
-			break
+		log.Printf("PID=%d", pid)
+		if key, err = mntl.RecvKey(); err != nil {
+			log.Printf("unable to receive key: %s", err.Error())
 		}
-		msg = GetMoveCursorDown(buf, 1)
-		_, err = conn.Write(msg)
-		time.Sleep(time.Second)
+
+		switch key {
+		case Envoi:
+			pid = p.Envoi()
+		case Retour:
+			pid = p.Retour()
+		case Repetition:
+			pid = p.Repetition()
+		case Guide:
+			pid = p.Guide()
+		case Annulation:
+			pid = p.Annulation()
+		case Sommaire:
+			pid = p.Sommaire()
+		case Correction:
+			pid = p.Correction()
+		case Suite:
+			pid = p.Suite()
+		case ConnexionFin:
+			pid = p.ConnexionFin()
+		default:
+			p.NewKey(key)
+		}
 	}
 }

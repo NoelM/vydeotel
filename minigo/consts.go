@@ -143,7 +143,7 @@ const (
 const (
 	Rep = 0x12 // Repetition : Permet de répéter le dernier caractère visualisé avec les attributs courants de la position active d'écriture.
 	Nul = 0x00 // Null :
-	Sp  = 0x20 // Space :
+	Sp  = 0x20 // Space : Séparateur de zone possédant les mêmes attributs
 	Del = 0x7F // Delete :
 	Bel = 0x07 // Bell : Provoque l'émission d'un signal sonore
 )
@@ -237,7 +237,7 @@ const (
 	Minuscules = 0x45 // Mode minuscules / majuscules du clavier
 )
 
-// 12 Commandes Protocole relatives au changement de standard  (voir p.144)
+// 12 Commandes Protocole relatives au changement de standard (voir p.144)
 const (
 	Mixte1  = 0x327D
 	Mixte2  = 0x327E
@@ -267,10 +267,10 @@ const (
 )
 
 // Correspondance ASCII / Videotex
-const CHAR_TABLE = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx !\"//$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_xabcdefghijklmnopqrstuvwxyz"
+const CharTable = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_xabcdefghijklmnopqrstuvwxyz"
 
 func GetVideotextCharByte(c byte) byte {
-	return byte(strings.LastIndexByte(CHAR_TABLE, c))
+	return byte(strings.LastIndexByte(CharTable, c))
 }
 
 func IsValidChar(c byte) bool {

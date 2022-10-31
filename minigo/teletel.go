@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/binary"
 	"errors"
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -187,21 +189,55 @@ func GetCleanLineToCursor(buf []byte) []byte {
 
 func GetChar(c int32) (byte, error) {
 	vdtByte := GetVideotextCharByte(byte(c))
+	fmt.Printf("%q %x\n", c, vdtByte)
 	if IsValidChar(vdtByte) {
 		return vdtByte, nil
 	}
 	return 0, errors.New("invalid char byte")
 }
 
-func GetMessage(buf []byte, msg string) ([]byte, error) {
+func GetMessage(buf []byte, msg string) []byte {
 	for _, c := range msg {
 		if b, err := GetChar(c); err == nil {
 			buf = append(buf, GetByteWithParity(b))
 		} else {
-			return nil, fmt.Errorf("ignored char %d: %w", c, err)
+			continue
 		}
 	}
-	return buf, nil
+	return buf
+}
+
+func GetAttribute(buf []byte, attribute byte) []byte {
+	buf = append(buf, GetByteWithParity(Esc))
+	buf = append(buf, GetByteWithParity(attribute))
+	return buf
+}
+
+func GetTextZone(buf []byte, attributes []byte, text string) []byte {
+	buf = append(buf, Sp)
+
+	for _, atb := range attributes {
+		buf = GetAttribute(buf, atb)
+	}
+	buf = GetMessage(buf, text)
+
+	buf = append(buf, Sp)
+
+	return buf
+}
+
+func GetSubArticle(buf []byte, content []byte, x, y int, res uint) []byte {
+	inBound, err := IsPosInBounds(x, y, res)
+	if err != nil {
+		log.Printf("unable to create sub-article: %s", err.Error())
+	}
+	if !inBound {
+		log.Printf("positon (x=%d ; y=%d) out-of-bounds", x, y)
+	}
+
+	buf = append(buf, Us, byte(0x40+x), byte(0x40+y))
+	buf = append(buf, content...)
+	return buf
 }
 
 type Minitel struct {
@@ -209,24 +245,31 @@ type Minitel struct {
 	resolution  uint
 	driver      Driver
 	writeBuffer []byte
-	readBuffer  []byte
+}
+
+func NewMinitel(driver Driver) *Minitel {
+	return &Minitel{
+		fontSize:   GrandeurNormale,
+		resolution: ResolutionSimple,
+		driver:     driver,
+	}
 }
 
 func (m *Minitel) clearBuffer() {
 	m.writeBuffer = []byte{}
 }
 
-func (m *Minitel) sendBuffer() error {
+func (m *Minitel) sendBuffer() (int, error) {
 	return m.driver.Send(m.writeBuffer)
 }
 
 func (m *Minitel) sendAndClearBuffer() error {
-	err := m.sendBuffer()
+	_, err := m.sendBuffer()
 
 	var retry int
 	for err != nil && retry < MaxRetry {
 		retry++
-		err = m.sendBuffer()
+		_, err = m.sendBuffer()
 		time.Sleep(10 * time.Millisecond)
 	}
 
@@ -234,6 +277,10 @@ func (m *Minitel) sendAndClearBuffer() error {
 		m.clearBuffer()
 	}
 	return err
+}
+
+func (m *Minitel) SendBytes(buf []byte) {
+	m.driver.Send(buf)
 }
 
 func (m *Minitel) MoveCursorXY(x, y int) error {
@@ -305,14 +352,11 @@ func (m *Minitel) CleanLineToCursor() error {
 }
 
 func (m *Minitel) PrintMessage(msg string) error {
-	var err error
-	if m.writeBuffer, err = GetMessage(m.writeBuffer, msg); err != nil {
-		return fmt.Errorf("unable to send message: %w", err)
-	}
+	m.writeBuffer = GetMessage(m.writeBuffer, msg)
 	return m.sendAndClearBuffer()
 }
 
-func (m *Minitel) RecvByte( (byte, error) {
+func (m *Minitel) recvByte() (byte, error) {
 	b, err := m.driver.Recv()
 	if err != nil {
 		return 0, err
@@ -326,64 +370,64 @@ func (m *Minitel) RecvByte( (byte, error) {
 	return b, nil
 }
 
-func (m *Minitel) RecvKey() ([]byte, error) {
+func (m *Minitel) RecvKey() (uint, error) {
 
-	b, err := m.RecvByte()
+	b, err := m.recvByte()
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	m.readBuffer = []byte{b}
+	readBuffer := []byte{b}
 
-	if m.readBuffer[0] == 0x19 {
-		b, err = m.RecvByte()
+	if readBuffer[0] == 0x19 {
+		b, err = m.recvByte()
 		if err != nil {
-			return nil, err
+			return 0, err
 		}
-		m.readBuffer = append(m.readBuffer, b)
+		readBuffer = append(readBuffer, b)
 
-		switch m.readBuffer[1] {
+		switch readBuffer[1] {
 		case 0x23:
-			m.readBuffer = []byte{0xA3}
+			readBuffer = []byte{0xA3}
 		case 0x27:
-			m.readBuffer = []byte{0xA7}
+			readBuffer = []byte{0xA7}
 		case 0x30:
-			m.readBuffer = []byte{0xB0}
+			readBuffer = []byte{0xB0}
 		case 0x31:
-			m.readBuffer = []byte{0xB1}
+			readBuffer = []byte{0xB1}
 		case 0x38:
-			m.readBuffer = []byte{0xF7}
+			readBuffer = []byte{0xF7}
 		case 0x7B:
-			m.readBuffer = []byte{0xDF}
+			readBuffer = []byte{0xDF}
 		}
-	} else if m.readBuffer[0] == 0x13 {
-		b, err = m.RecvByte()
+	} else if readBuffer[0] == 0x13 {
+		b, err = m.recvByte()
 		if err != nil {
-			return nil, err
+			return 0, err
 		}
-		m.readBuffer = append(m.readBuffer, b)
-	} else if m.readBuffer[0] == 0x1B {
+		readBuffer = append(readBuffer, b)
+	} else if readBuffer[0] == 0x1B {
 		time.Sleep(20 * time.Millisecond)
-		b, err = m.RecvByte()
+		b, err = m.recvByte()
 		if err != nil {
-			return nil, err
+			return 0, err
 		}
-		m.readBuffer = append(m.readBuffer, b)
+		readBuffer = append(readBuffer, b)
 
-		if m.readBuffer[1] == 0x5B {
-			b, err = m.RecvByte()
+		if readBuffer[1] == 0x5B {
+			b, err = m.recvByte()
 			if err != nil {
-				return nil, err
+				return 0, err
 			}
-			m.readBuffer = append(m.readBuffer, b)
+			readBuffer = append(readBuffer, b)
 
-			if m.readBuffer[2] == 0x34 || m.readBuffer[2] == 0x32 {
-				b, err = m.RecvByte()
+			if readBuffer[2] == 0x34 || readBuffer[2] == 0x32 {
+				b, err = m.recvByte()
 				if err != nil {
-					return nil, err
+					return 0, err
 				}
-				m.readBuffer = append(m.readBuffer, b)
+				readBuffer = append(readBuffer, b)
 			}
 		}
 	}
-	return m.readBuffer, nil
+	return uint(binary.BigEndian.Uint32(readBuffer)), nil
 }

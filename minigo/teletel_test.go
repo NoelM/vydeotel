@@ -83,3 +83,13 @@ func TestCheckByteParity(t *testing.T) {
 		t.Fatalf("wrong parity check for %b, expected %b, computed %b, with error: %s", goodParityByte, wrongParityRemoved, computed, err.Error())
 	}
 }
+
+func TestCharMapping(t *testing.T) {
+	c, err := GetChar('A')
+	if err != nil {
+		t.Fatalf("recived error: %s", err.Error())
+	}
+	if c != 0x41 {
+		t.Fatalf("recieved %x instead of %x", c, 0x41)
+	}
+}
