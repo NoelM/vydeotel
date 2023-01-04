@@ -6,40 +6,34 @@ from vydeotel.consts import *
 from vydeotel.connector import Connector
 
 
-class VideoText:
-    def __init__(self, conn: Connector, write_parity=True, read_parity=True):
-        self.conn = conn
+class Minitel:
+    def __init__(self, connector: Connector):
+        self.connector = connector
+
         self.current_size = GRANDEUR_NORMALE
-
-        self.write_parity = write_parity
-        self.read_parity = read_parity
-
         self.columns = COLONNES
         self.rows = LIGNES
 
     def write_byte(self, byte: int):
-        if self.write_parity:
-            even = False
-            for i in range(7):
-                if bit_read(byte, i) == 1:
-                    even = not even
+        even = False
+        for i in range(7):
+            if bit_read(byte, i) == 1:
+                even = not even
 
-            if even:
-                byte = bit_write(byte, 7, 1)
-            else:
-                byte = bit_write(byte, 7, 0)
+        if even:
+            byte = bit_write(byte, 7, 1)
+        else:
+            byte = bit_write(byte, 7, 0)
 
-        self.conn.write(pack("B", byte))
+        print(byte)
+        self.connector.write(pack("B", byte))
 
     def write_word(self, word):
         self.write_byte(high_byte(word))
         self.write_byte(low_byte(word))
 
     def read_byte(self):
-        byte = self.conn.read()
-
-        if not self.read_parity:
-            return byte
+        byte = self.connector.read()
 
         even = False
         for i in range(7):
@@ -75,16 +69,16 @@ class VideoText:
 
         if bauds == 300:
             self.write_byte(0b1010010)
-            self.conn.baudrate = 300
+            self.connector.baudrate = 300
         elif bauds == 1200:
             self.write_byte(0b1100100)
-            self.conn.baudrate = 1200
+            self.connector.baudrate = 1200
         elif bauds == 4800:
             self.write_byte(0b1110110)
-            self.conn.baudrate = 4800
+            self.connector.baudrate = 4800
         elif bauds == 9600:
             self.write_byte(0b1111111)
-            self.conn.baudrate = 9600
+            self.connector.baudrate = 9600
 
         # TODO: respect the C implem
         return bauds
@@ -272,12 +266,12 @@ class VideoText:
         return self.working_mode()
 
     def working_mode(self):
-        while not self.conn.readable():
+        while not self.connector.readable():
             continue
 
         trame = 0
         while trame >> 8 != 0x1B3A73:  # PRO2, REP_STATUS_FCT
-            if self.conn.readable():
+            if self.connector.readable():
                 trame = (trame << 8) + self.read_byte()
 
         return trame
@@ -300,7 +294,7 @@ class VideoText:
         self.write_byte(ESC)
         self.write_byte(0x61)
 
-        while not self.conn.readable():
+        while not self.connector.readable():
             continue
 
         trame = 0
@@ -312,11 +306,11 @@ class VideoText:
     def get_key_code(self):
         code = 0
 
-        if self.conn.readable():
+        if self.connector.readable():
             code = self.read_byte()
 
         if code == 0x19:
-            while not self.conn.readable():
+            while not self.connector.readable():
                 continue
             code = (code << 8) + self.read_byte()
             if code == 0x1923:
@@ -332,19 +326,19 @@ class VideoText:
             elif code == 0x197B:
                 code = 0xDF
         elif code == 0x13:
-            while not self.conn.readable():
+            while not self.connector.readable():
                 continue
             code = (code << 8) + self.read_byte()
         elif code == 0x1B:
             time.sleep(0.02)
-            if self.conn.readable():
+            if self.connector.readable():
                 code = (code << 8) + self.read_byte()
                 if code == 0x1B5B:
-                    while not self.conn.readable():
+                    while not self.connector.readable():
                         continue
                     code = (code << 8) + self.read_byte()
                     if code == 0x1B5B34 or code == 0x1B5B32:
-                        while not self.conn.readable():
+                        while not self.connector.readable():
                             continue
                         code = (code << 8) + self.read_byte()
 

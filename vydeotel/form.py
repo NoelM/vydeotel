@@ -1,6 +1,6 @@
 from vydeotel.page import Page
 from vydeotel.consts import *
-from vydeotel.videotext import VideoText
+from vydeotel.minitel import Minitel
 from vydeotel.input import Input
 from typing import Optional, List, Dict
 
@@ -8,14 +8,14 @@ from typing import Optional, List, Dict
 class Form(Page):
     def __init__(
         self,
-        column: int,
-        row: int,
-        width: int,
-        height: int,
         inputs: List[Input],
-        fg=CARACTERE_BLANC,
-        bg=FOND_NORMAL,
-        typo=GRANDEUR_NORMALE,
+        column: int = 1,
+        row: int = 1,
+        width: int = COLONNES,
+        height: int = LIGNES,
+        fg: int = CARACTERE_BLANC,
+        bg: int = FOND_NORMAL,
+        typo: int = GRANDEUR_NORMALE,
     ) -> None:
 
         super().__init__(column, row, width, height, fg, bg, typo)
@@ -24,10 +24,10 @@ class Form(Page):
         self.inputs = inputs
         self.active_input = -1
 
-    def set_minitel(self, vdt: VideoText):
-        super().set_minitel(vdt)
+    def setup(self, minitel: Minitel):
+        super().setup(minitel)
         for i in self.inputs:
-            i.set_minitel(vdt)
+            i.setup(minitel)
 
     def get_active_input(self) -> Optional[Input]:
         if len(self.inputs) == 0 or self.active_input < 0:
@@ -64,9 +64,6 @@ class Form(Page):
 
     def draw(self) -> None:
         super().draw()
-
-        if len(self.inputs) == 0:
-            return
 
         for i in self.inputs:
             i.draw()

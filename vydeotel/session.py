@@ -1,5 +1,5 @@
-from threading import Thread
-from vydeotel.connector import Connector
+import socketserver
+from vydeotel.connector import Connector, TCPConnector
 from vydeotel.page import Page
 from vydeotel.consts import (
     ENVOI,
@@ -11,27 +11,22 @@ from vydeotel.consts import (
     GUIDE,
     SUITE,
 )
-from vydeotel.videotext import VideoText
+from vydeotel.minitel import Minitel
 
 
-class Session:
-    def __init__(self, connector: Connector, landing: Page):
-        self.videotxt = VideoText(connector)
+class Session(socketserver.BaseRequestHandler):
+    def setup(self):
+        self.connector = TCPConnector(self.request)
+        self.minitel = Minitel(self.connector)
 
-        self.landing = landing
-        self.current_page = landing
+        self.landing = self.server.landing()
+        self.current_page = None
         self.previous_page = None
 
-        self.thread = None
-
-    def start(self):
-        self.thread = Thread(target=self._loop)
-        self.thread.start()
-
-    def _loop(self):
+    def handle(self):
         self._new_page(self.landing)
         while True:
-            key = self.videotxt.get_key_code()
+            key = self.minitel.get_key_code()
             if key == ENVOI:
                 self.envoi()
             elif key == ANNULATION:
@@ -57,7 +52,7 @@ class Session:
     def _new_page(self, page: Page):
         self.previous_page = self.current_page
         self.current_page = page
-        self.current_page.set_minitel(self.videotxt)
+        self.current_page.setup(self.minitel)
         self._draw()
 
     def new_key(self, key):

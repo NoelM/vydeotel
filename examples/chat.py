@@ -1,27 +1,59 @@
 import sys
-sys.path.append("../vydeotel/")
-import socket
+import hashlib
+import dbm
+from datetime import datetime
+from threading import Lock
+import copy
+from collections import deque
 
-from vydeotel.application import Application
-from vydeotel.connector import TCPConnector
+sys.path.append("../vydeotel/")
+from vydeotel.server import Server
+from vydeotel.session import Session
 from vydeotel.input import Input
 from vydeotel.form import Form
 from vydeotel.page import Page
-from vydeotel.consts import INVERSION_FOND, DOUBLE_GRANDEUR, COLONNES, LIGNES
+from vydeotel.consts import INVERSION_FOND, DOUBLE_GRANDEUR
 
-from typing import Optional
+from typing import Optional, List
 
 USERNAME = "username"
 PASSWORD = "password"
+PASSWORD_VALID = "password_valid"
+
+users = dbm.open("users.db", 'c')
+
+class Message():
+    def __init__(self, pseudo: str, message: str) -> None:
+        self.time = datetime.now()
+        self.pseudo = pseudo
+        self.message = message
+
+
+class Messages():
+    def __init__(self) -> None:
+        self.lock = Lock()
+        self.messages = deque(maxlen=100)
+        self.id = 0
+    
+    def new_message(self, message: Message) -> None:
+        with self.lock:
+            self.messages.append(copy.deepcopy(message))
+            self.id += 1
+
+    def get_message_since(self, id: int) -> List[Message]:
+        with self.lock:
+            last_message_pos = len(self.messages) - 1
+            return copy.deepcopy(self.messages[last_message_pos - (self.id-id) : last_message_pos])
+
+    def get_last_n_messages(self, n: int) -> List[Message]:
+        with self.lock:
+            last_message_pos = len(self.messages) - 1
+            return copy.deepcopy(self.messages[last_message_pos - n : last_message_pos])
 
 
 class LogWindow(Form):
     def __init__(self):
         super().__init__(
-            column=1,
-            row=1,
-            width=COLONNES,
-            height=LIGNES,
             inputs=[
                 Input(
                     key=USERNAME,
@@ -42,6 +74,7 @@ class LogWindow(Form):
 
     def draw(self) -> None:
         super().draw()
+
         self.default_pos()
         self.minitel.move_cursor_down(1)
 
@@ -60,6 +93,9 @@ class LogWindow(Form):
         self.minitel.println("en navigant avec SUITE et RETOUR")
         self.minitel.println("Tappez sur ENVOI lorsque tout est rempli")
 
+        self.minitel.move_cursor_down(2)
+        self.minitel.println("Pour vous inscrire GUIDE")
+
         self.activate_first_input()
 
     def envoi(self) -> Optional[Page]:
@@ -76,10 +112,13 @@ class LogWindow(Form):
             username=self.get_username(),
         )
 
+    def guide(self) -> Page:
+        return SignInWindow()
+
     def failed_login(self):
         self.minitel.move_cursor_xy(1, 6)
         self.minitel.set_attribute(INVERSION_FOND)
-        self.minitel.println("Pseudo ou MDP invalide")
+        self.minitel.println("Pseudo ou MDP invalides")
         self.default_style()
 
     def new_key(self, key: int):
@@ -95,18 +134,103 @@ class LogWindow(Form):
         return self.credentials[USERNAME]
 
     def is_credentials_valid(self):
-        return {USERNAME: "NONO", PASSWORD: "NONO"} == self.credentials
+        h = hashlib.sha3_256()
+        h.update(bytes(self.credentials[PASSWORD], "utf-8"))
+
+        return (
+            self.credentials[USERNAME] in users
+            and users[self.credentials[USERNAME]] == h.digest()
+        )
+
+    def repetition(self) -> Optional[Page]:
+        self.draw()
+
+
+class SignInWindow(Form):
+    def __init__(self):
+        super().__init__(
+            inputs=[
+                Input(
+                    key=USERNAME,
+                    column=25,
+                    row=4,
+                    length=10,
+                ),
+                Input(
+                    key=PASSWORD,
+                    column=25,
+                    row=5,
+                    length=10,
+                ),
+                Input(
+                    key=PASSWORD_VALID,
+                    column=25,
+                    row=6,
+                    length=10,
+                ),
+            ],
+        )
+
+        self.credentials = {}
+
+    def draw(self) -> None:
+        super().draw()
+
+        self.default_pos()
+        self.minitel.move_cursor_down(1)
+
+        self.minitel.set_attribute(INVERSION_FOND)
+        self.minitel.set_attribute(DOUBLE_GRANDEUR)
+        self.minitel.println("INSCRIPTION")
+
+        self.default_style()
+        self.minitel.move_cursor_down(1)
+
+        self.minitel.println("PSEUDO")
+        self.minitel.println("MOT DE PASSE")
+        self.minitel.println("MOT DE PASSE (COPIE)")
+
+        self.minitel.move_cursor_down(3)
+        self.minitel.println("Choisissez votre Pseudo et Mot de Passe")
+        self.minitel.println("en navigant avec SUITE et RETOUR")
+        self.minitel.println("Tappez sur ENVOI lorsque tout est rempli")
+
+        self.activate_first_input()
+
+    def envoi(self) -> Optional[Page]:
+        self.credentials = self.get_form()
+
+        if not self.is_credentials_valid():
+            self.reset()
+            self.reset_inputs()
+            self.activate_first_input()
+            return None
+
+        self.register()
+
+        return LogWindow()
+
+    def is_credentials_valid(self):
+        print(self.credentials)
+        return (
+            self.credentials[USERNAME] not in users
+            and self.credentials[PASSWORD] == self.credentials[PASSWORD_VALID]
+        )
+
+    def reset(self):
+        self.buffer = ""
+
+    def register(self):
+        h = hashlib.sha3_256()
+        h.update(bytes(self.credentials[PASSWORD], "utf-8"))
+        users[self.credentials[USERNAME]] = h.digest()
+
+        self.credentials = {}
 
 
 class ChatWindow(Page):
     def __init__(self, username: str):
-        super().__init__(
-            column=1,
-            row=1,
-            width=COLONNES,
-            height=LIGNES,
-        )
-
+        super().__init__()
         self.username = username
 
     def draw(self):
@@ -117,14 +241,5 @@ class ChatWindow(Page):
 ADDRESS = ""
 PORT = 3615
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((ADDRESS, PORT))
-server.listen(1)
-client, adresseClient = server.accept()
-print("Connection from:", adresseClient)
-
-login_window = LogWindow()
-chat_app = Application(login_window)
-connector = TCPConnector(client)
-
-chat_app.new_session(connector)
+minitel_tcp_server = Server((ADDRESS, PORT), Session, landing=LogWindow)
+minitel_tcp_server.serve_forever()
